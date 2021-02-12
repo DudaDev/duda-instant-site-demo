@@ -1,26 +1,29 @@
 const fetch = require('node-fetch')
 
-const { API_BASE, API_USER, API_PASS } = process.env;
-const buffer = Buffer.from(`${API_USER}:${API_PASS}`);
-const API_AUTH = buffer.toString('base64');
+const { API_BASE, API_USER, API_PASS } = process.env
+const buffer = Buffer.from(`${API_USER}:${API_PASS}`)
+const API_AUTH = buffer.toString('base64')
 
 const headers = {
   'Content-Type': 'application/json',
   'Authorization': `Basic ${API_AUTH}`
-};
+}
 
-exports.handler = async function (event: AWSLambda.APIGatewayEvent) {
-  const response = {
-    body: '',
+exports.handler =  async function(event, context) {
+
+  var response = {
     statusCode: 400,
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
     }
-  };
+  }
 
   try {
+
     const templateId = JSON.parse(event.body).templateId
+
     if (await templateExists(templateId)) {
+
       const siteName = await createSite(templateId)
 
       response.statusCode = 200
@@ -29,21 +32,26 @@ exports.handler = async function (event: AWSLambda.APIGatewayEvent) {
       })
 
     } else {
+
       response.body = JSON.stringify({
         'error': `Unknown template ${templateId}.`
       })
+
     }
+
   } catch(e) {
+
     response.statusCode = 500
     response.body = JSON.stringify({
       "error": `Problem handling ${event.httpMethod} on resource ${event.resource}`,
       "description": e
     })
+
   }
 
-  return response;
+  return response
 
-};
+}
 
 const createSite = async function(template) {
 
@@ -65,6 +73,7 @@ const createSite = async function(template) {
 }
 
 const templateExists = async function(id) {
+
     const url = `${API_BASE}/sites/multiscreen/templates`
 
     const options = {
@@ -81,4 +90,3 @@ const templateExists = async function(id) {
     return match
 
 }
-
