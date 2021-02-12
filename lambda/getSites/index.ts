@@ -1,6 +1,6 @@
 const fetch = require('node-fetch')
 
-const { API_BASE: dudaAPI, API_USER, API_PASS } = process.env;
+const { API_BASE, API_USER, API_PASS } = process.env;
 const buffer = Buffer.from(`${API_USER}:${API_PASS}`);
 const API_AUTH = buffer.toString('base64');
 
@@ -41,7 +41,7 @@ const getSites = async function() {
 
   const options = {
     method: 'GET',
-    headers:
+    headers
   }
 
   return fetch(url, options)

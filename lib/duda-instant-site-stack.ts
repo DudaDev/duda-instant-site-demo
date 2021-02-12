@@ -10,8 +10,20 @@ export class DudaInstantSiteStack extends cdk.Stack {
     super(scope, id, props);
 
     const { API_USER = '', API_PASS = '', API_BASE = '' } = process.env;
+
     const getSites = new lambda.Function(this, 'GetSitesLambda', {
       code: lambda.Code.fromAsset('lambda/getSites'),
+      handler: 'index.handler',
+      runtime: lambda.Runtime.NODEJS_12_X,
+      environment: {
+        API_USER,
+        API_PASS,
+        API_BASE
+      }
+    });
+
+    const createSite = new lambda.Function(this, 'CreateSiteLambda', {
+      code: lambda.Code.fromAsset('lambda/createSite'),
       handler: 'index.handler',
       runtime: lambda.Runtime.NODEJS_12_X,
       environment: {
@@ -30,5 +42,6 @@ export class DudaInstantSiteStack extends cdk.Stack {
 
     const sites = api.root.addResource('sites');
     sites.addMethod('GET', new apiGateway.LambdaIntegration(getSites));
+    sites.addMethod('POST', new apiGateway.LambdaIntegration(createSite));
   }
 }
