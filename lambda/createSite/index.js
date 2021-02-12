@@ -10,7 +10,6 @@ const headers = {
 }
 
 exports.handler =  async function(event, context) {
-
   var response = {
     statusCode: 400,
     headers: {
@@ -19,37 +18,23 @@ exports.handler =  async function(event, context) {
   }
 
   try {
-
     const templateId = JSON.parse(event.body).templateId
 
-    if (await templateExists(templateId)) {
-
-      const siteName = await createSite(templateId)
-
-      response.statusCode = 200
-      response.body = JSON.stringify({
-        'siteName': siteName
-      })
-
-    } else {
-
-      response.body = JSON.stringify({
-        'error': `Unknown template ${templateId}.`
-      })
-
-    }
+    const siteName = await createSite(templateId)
+    response.statusCode = 200
+    response.body = JSON.stringify({
+      'siteName': siteName
+    })
 
   } catch(e) {
-
     response.statusCode = 500
     response.body = JSON.stringify({
       "error": `Problem handling ${event.httpMethod} on resource ${event.resource}`,
       "description": e
     })
-
   }
-
-  return response
+    
+    return response;
 
 }
 
@@ -69,24 +54,5 @@ const createSite = async function(template) {
     const json = await response.json()
 
     return json['site_name']
-
-}
-
-const templateExists = async function(id) {
-
-    const url = `${API_BASE}/sites/multiscreen/templates`
-
-    const options = {
-      method: 'GET',
-      headers: headers
-    }
-
-    const response = await fetch(url, options)
-    const json = await response.json()
-
-    var match = false
-    json.forEach(template => if (template.template_id) match = true)
-
-    return match
 
 }
