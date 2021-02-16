@@ -2,112 +2,66 @@ import * as cdk from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as apiGateway from '@aws-cdk/aws-apigateway'
 import * as dotenv from 'dotenv';
+import { Function, FunctionProps, LayerVersion } from '@aws-cdk/aws-lambda';
+import { IResource, LambdaRestApi } from '@aws-cdk/aws-apigateway';
+import routes from './routes';
 
 dotenv.config();
 
+const verbs = ['GET','POST','PUT','PATCH','DELETE'];
+const environment = (
+  ({ API_USER = '', API_PASS = '', API_BASE = '' }) => ({ API_USER, API_PASS, API_BASE })
+)(process.env);
+
 export class DudaInstantSiteStack extends cdk.Stack {
+  private layer: LayerVersion;
+
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const { API_USER = '', API_PASS = '', API_BASE = '' } = process.env;
-    const environment = {
-       API_USER,
-       API_PASS,
-       API_BASE
+    this.layer = this.createLayer();
+    this.createAPI(routes);
+  }
+
+  private createResources(resource: IResource, obj: object): IResource {
+    for (const [key, value] of Object.entries(obj)) {
+      verbs.includes(key.toUpperCase()) 
+        ? resource.addMethod(key, new apiGateway.LambdaIntegration(this.createLambda(value)))
+        : this.createResources(resource.addResource(key), value);
     }
+   
+    return resource;
+  }
 
-    const createSite = new lambda.Function(this, 'CreateSiteLambda', {
-      code: lambda.Code.fromAsset('lambda/createSite'),
-      handler: 'index.handler',
-      runtime: lambda.Runtime.NODEJS_14_X,
-      environment: environment
-    });
-
-    const createUser = new lambda.Function(this, 'CreateUserLambda', {
-      code: lambda.Code.fromAsset('lambda/createUser'),
-      handler: 'index.handler',
-      runtime: lambda.Runtime.NODEJS_14_X,
-      environment: environment
-    });
-
-    const deleteSite = new lambda.Function(this, 'DeleteSiteLambda', {
-      code: lambda.Code.fromAsset('lambda/deleteSite'),
-      handler: 'index.handler',
-      runtime: lambda.Runtime.NODEJS_14_X,
-      environment: environment
-    });
-
-    const deleteSites = new lambda.Function(this, 'DeleteSitesLambda', {
-      code: lambda.Code.fromAsset('lambda/deleteSites'),
-      handler: 'index.handler',
-      runtime: lambda.Runtime.NODEJS_14_X,
-      environment: environment
-    });
-
-    const getSites = new lambda.Function(this, 'GetSitesLambda', {
-      code: lambda.Code.fromAsset('lambda/getSites'),
-      handler: 'index.handler',
-      runtime: lambda.Runtime.NODEJS_14_X,
-      environment: environment
-    });
-
-    const getSSOLink = new lambda.Function(this, 'GetSSOLinkLambda', {
-      code: lambda.Code.fromAsset('lambda/getSSOLink'),
-      handler: 'index.handler',
-      runtime: lambda.Runtime.NODEJS_14_X,
-      environment: environment
-    });
-
-    const grantUserAccess = new lambda.Function(this, 'GrantUserAccessLambda', {
-      code: lambda.Code.fromAsset('lambda/grantUserAccess'),
-      handler: 'index.handler',
-      runtime: lambda.Runtime.NODEJS_14_X,
-      environment: environment
-    });
-
-    const publishSite = new lambda.Function(this, 'PublishSiteLambda', {
-      code: lambda.Code.fromAsset('lambda/publishSite'),
-      handler: 'index.handler',
-      runtime: lambda.Runtime.NODEJS_14_X,
-      environment: environment
-    });
-
-    const updateContent = new lambda.Function(this, 'UpdateContentLambda', {
-      code: lambda.Code.fromAsset('lambda/updateContent'),
-      handler: 'index.handler',
-      runtime: lambda.Runtime.NODEJS_14_X,
-      environment: environment
-    });
-
+  private createAPI(routes: object): LambdaRestApi {
     const api = new apiGateway.LambdaRestApi(this, 'duda', {
-      handler: getSites,
+      handler: this.createLambda('root'),
       proxy: false
     });
 
     api.root.addMethod('ANY');
+    this.createResources(api.root, routes);
+    return api;
+  }
 
-    const sites = api.root.addResource('sites');
-    const siteName = sites.addResource('{siteName}');
-    const siteContent = siteName.addResource('content');
+  private createLambda(dir: string): Function {
+    return new lambda.Function(this, `${dir}Lambda`, this.getLambdaConfig(`lambdas/${dir}`));
+  }
 
-    sites.addMethod('POST', new apiGateway.LambdaIntegration(createSite));
-    sites.addMethod('DELETE', new apiGateway.LambdaIntegration(deleteSites));
-    sites.addMethod('GET', new apiGateway.LambdaIntegration(getSites));
+  private getLambdaConfig(path: string): FunctionProps {
+    return {
+      code: lambda.Code.fromAsset(path),
+      handler: 'index.handler',
+      runtime: lambda.Runtime.NODEJS_14_X,
+      environment,
+      layers: [this.layer]
+    }
+  }
 
-    siteName.addMethod('PUT', new apiGateway.LambdaIntegration(publishSite));
-    siteName.addMethod('DELETE', new apiGateway.LambdaIntegration(deleteSite));
-
-    siteContent.addMethod('PATCH', new apiGateway.LambdaIntegration(updateContent));
-    siteContent.addMethod('POST', new apiGateway.LambdaIntegration(updateContent));
-
-    const users = api.root.addResource('users');
-    const userId = users.addResource('{userId}');
-    const provision = userId.addResource('provision');
-
-    userId.addMethod('GET', new apiGateway.LambdaIntegration(getSSOLink));
-    userId.addMethod('POST', new apiGateway.LambdaIntegration(createUser));
-
-    provision.addMethod('POST', new apiGateway.LambdaIntegration(grantUserAccess));
-
+  private createLayer(): LayerVersion {
+    return new lambda.LayerVersion(this, 'lambda-layer', {
+      code: lambda.Code.fromAsset('layers'),
+      compatibleRuntimes: [lambda.Runtime.NODEJS_14_X],
+      });
   }
 }
