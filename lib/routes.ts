@@ -4,13 +4,19 @@ export default {
     "GET":  "getSites",
     "{siteName}": {
       "DELETE": "deleteSite",
-      "release": {
-        "POST": "publishSite"
+      "releases": {
+        "POST": "publishSite",
+        "DELETE": "unpublishSite"
       }
     }
   },
   "users": {
-    "POST": "createUser"
+    "POST": "createUser",
+    "{userName}": {
+      "access": {
+        "POST": "grantUserAccess"
+      }
+    }
   }
 };
   
