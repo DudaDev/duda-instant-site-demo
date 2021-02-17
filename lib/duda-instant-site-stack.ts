@@ -4,6 +4,7 @@ import * as apiGateway from '@aws-cdk/aws-apigateway'
 import * as dotenv from 'dotenv';
 import { Function, FunctionProps, LayerVersion } from '@aws-cdk/aws-lambda';
 import { IResource, LambdaRestApi } from '@aws-cdk/aws-apigateway';
+import { SPADeploy } from 'cdk-spa-deploy';
 import routes from './routes';
 
 dotenv.config();
@@ -21,6 +22,14 @@ export class DudaInstantSiteStack extends cdk.Stack {
 
     this.layer = this.createLayer();
     this.createAPI(routes);
+
+    // @ts-ignore
+    new SPADeploy(this, 'spaDeploy')
+      .createBasicSite({
+        indexDoc: 'index.html',
+        websiteFolder: './website'
+      });
+
   }
 
   private createResources(resource: IResource, obj: object): IResource {
