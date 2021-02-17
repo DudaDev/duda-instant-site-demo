@@ -1,0 +1,62 @@
+{
+  "account_name": "example@domain.com",
+  "external_uid": "externalReference1",
+  "site_domain": "customDomain1.com",
+  "site_business_info": {
+    "business_name": "Example Business",
+    "address": {
+      "street": "1240 Main ST.",
+      "city": "San Francisco",
+      "state": "CA",
+      "country": "United States",
+      "zip_code": "94122"
+    },
+    "phone_number": "(415) 123-1234",
+    "email": "example@domain.com",
+    "opentable_info": []
+  },
+  "site_alternate_domains": {
+    "domains": [
+      "example1.com", "example2.net"
+    ],
+    "is_redirect": true
+  },
+  "site_seo": {
+    "og_image": "string",
+    "title": "Example Title",
+    "description": "Example description. Should be around 155 characters long, but can be upto 320."
+  },
+  "schemas": {
+    "local_business": {
+      "enabled": true,
+      "status": "MISSING_REQUIRED_FIELDS",
+      "missing_required_fields": [
+        "Business Name",
+        "Geo Coordinates",
+        "Physical Address"
+      ],
+      "missing_recommended_fields": [
+        "Phone Number",
+        "Image"
+      ]
+    }
+  },
+  "site_name": "6c56394c",
+  "template_id": 20022,
+  "site_default_domain": "exampleBusiness.multiscreensite.com",
+  "preview_site_url": "http://websitebuilder.websitebusiness.com/preview/6c56394c",
+  "last_published_date": "2016-11-15T22:55:53",
+  "first_published_date": "2016-04-03T04:36:54",
+  "force_https": true,
+  "lang": "en",
+  "last_reset_by": "ex@dudamobile.com",
+  "modification_date": "2016-11-15T22:55:53",
+  "creation_date": "2016-04-01T04:36:54",
+  "publish_status": "PUBLISHED",
+  "thumbnail_url": "https://irp-cdn.multiscreensite.com/423b2d/screenshots/Screenshot.png?timestamp=1565804336000&updated=true",
+  "fav_icon": "https://my.duda.co/favicon_d1.ico",
+  "store_status": "NONE",
+  "cookie_notification": {
+    "enabled": false
+  }
+}

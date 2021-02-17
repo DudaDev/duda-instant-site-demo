@@ -42,7 +42,7 @@ export async function handler(event: any) {
 
 }
 
-const createSite = async function(template: number) {
+const createSite = async function(template: string) {
 
     const url = `${API_BASE}/sites/multiscreen/create`
 

@@ -26,6 +26,7 @@
     "@aws-cdk/core": "1.88.0",
     "@types/aws-lambda": "^8.10.72",
     "dotenv": "^8.2.0",
+    "node-fetch": "^2.6.1",
     "source-map-support": "^0.5.16"
   }
 }
