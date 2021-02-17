@@ -22,7 +22,7 @@ export async function handler(event: any) {
 
   try {
 
-    const userId = await getUser(event.pathParameters.userId)
+    const userId = await getUser(event.body.userId)
 
     response.statusCode = 200
     response.body = JSON.stringify({

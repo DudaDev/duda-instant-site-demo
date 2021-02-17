@@ -10,7 +10,7 @@ const headers = {
   'Authorization': `Basic ${API_AUTH}`
 }
 
-exports.handler =  async function(event: any) {
+export async function handler(event: any) {
 
   var response = {
     body: '',

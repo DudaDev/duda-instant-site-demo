@@ -11,6 +11,7 @@ const headers = {
 }
 
 export async function handler(event: any) {
+
   var response = {
     body: '',
     statusCode: 400,
@@ -20,6 +21,7 @@ export async function handler(event: any) {
   }
 
   try {
+    
     const templateId = JSON.parse(event.body).templateId
 
     const siteName = await createSite(templateId)
@@ -35,7 +37,7 @@ export async function handler(event: any) {
       "description": e
     })
   }
-    
+
     return response;
 
 }

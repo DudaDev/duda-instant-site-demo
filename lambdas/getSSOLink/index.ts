@@ -22,7 +22,7 @@ export async function handler(event: any) {
 
   try {
 
-    const ssoLink = await getSSOLink(event.pathParameters.userId, event.body.siteName)
+    const ssoLink = await getSSOLink(event.pathParameters.userId, event.pathParameters.siteName)
 
     response.statusCode = 200
     response.body = JSON.stringify({
