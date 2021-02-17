@@ -1,7 +1,7 @@
 // @ts-ignore
 import * as fetch from 'node-fetch';
 
-const { API_BASE, API_USER, API_PASS } = process.env
+const { API_BASE = '', API_USER = '', API_PASS = '' } = process.env
 const buffer = Buffer.from(`${API_USER}:${API_PASS}`)
 const API_AUTH = buffer.toString('base64')
 
@@ -21,7 +21,7 @@ export async function handler(event: any) {
   }
 
   try {
-    
+
     const sites = await getSites()
     const json = await sites.json()
 
