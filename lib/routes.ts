@@ -2,19 +2,19 @@ export default {
   "sites": {
     "POST": "createSite",
     "GET":  "getSites",
-    "{siteName}": {
+    "{site_name}": {
       "DELETE": "deleteSite",
-      "releases": {
-        "POST": "publishSite",
-        "DELETE": "unpublishSite"
+      "release": {
+        "POST": "publishSite"
       }
     }
   },
   "users": {
     "POST": "createUser",
-    "{userName}": {
-      "access": {
-        "POST": "grantUserAccess"
+    "access": {
+      "POST": "grantUserAccess",
+      "{site_name}": {
+        "GET": "getSSOLink"
       }
     }
   }

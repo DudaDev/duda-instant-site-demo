@@ -1,4 +1,5 @@
-const fetch = require('node-fetch')
+// @ts-ignore
+import * as fetch from 'node-fetch';
 
 const { API_BASE, API_USER, API_PASS } = process.env
 const buffer = Buffer.from(`${API_USER}:${API_PASS}`)
@@ -9,9 +10,10 @@ const headers = {
   'Authorization': `Basic ${API_AUTH}`
 }
 
-exports.handler =  async function(event, context) {
+exports.handler =  async function(event: any) {
 
   var response = {
+    body: '',
     statusCode: 400,
     headers: {
       "Content-Type": "application/json"
@@ -38,7 +40,7 @@ exports.handler =  async function(event, context) {
 
 }
 
-const uploadData = async function(siteName, content) {
+const uploadData = async function(siteName: any, content: any) {
 
   const url = `${API_BASE}/sites/multiscreen/${siteName}/content`
 

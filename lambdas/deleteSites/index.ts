@@ -1,4 +1,5 @@
-const fetch = require('node-fetch')
+// @ts-ignore
+import * as fetch from 'node-fetch';
 
 const { API_BASE, API_USER, API_PASS } = process.env
 const buffer = Buffer.from(`${API_USER}:${API_PASS}`)
@@ -9,9 +10,10 @@ const headers = {
   'Authorization': `Basic ${API_AUTH}`
 }
 
-exports.handler =  async function(event, context) {
+export async function handler(event: any) {
 
   var response = {
+    body: '',
     statusCode: 400,
     headers: {
       "Content-Type": "application/json"
@@ -21,7 +23,7 @@ exports.handler =  async function(event, context) {
   try {
 
     const sites = event.body
-    sites.forEach(site => await deleteSite(site.siteName))
+    sites.forEach(async (site: any) => await deleteSite(site.siteName))
 
     response.statusCode = 200
     response.body = `{"status":"Site ${event.pathParameters.siteName} deleted."}`
@@ -39,7 +41,7 @@ exports.handler =  async function(event, context) {
 
 }
 
-const deleteSite = async function(siteName) {
+const deleteSite = async function(siteName: any) {
 
     const url = `${API_BASE}/sites/multiscreen/${siteName}`
 
