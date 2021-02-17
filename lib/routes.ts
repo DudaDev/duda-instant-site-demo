@@ -1,6 +1,6 @@
 export default {
   "sites": {
-    "POST": "createSite", // not working, creates site but errors out. not sure why.
+    "POST": "createSite",
     "GET":  "getSites",
     "DELETE": "deleteSites",
     "{siteName}": {
@@ -13,7 +13,7 @@ export default {
     }
   },
   "users": {
-    "POST": "createUser", // not working, pathParameter issue
+    "POST": "createUser",
     "{userId}": {
       "accessFor": {
         "{siteName}": {

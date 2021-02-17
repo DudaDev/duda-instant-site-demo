@@ -62,6 +62,7 @@ export class DudaInstantSiteStack extends cdk.Stack {
       code: lambda.Code.fromAsset(path),
       handler: 'index.handler',
       runtime: lambda.Runtime.NODEJS_14_X,
+      timeout: cdk.Duration.seconds(20),
       environment,
       layers: [this.layer]
     }
