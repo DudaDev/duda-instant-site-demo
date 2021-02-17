@@ -25,17 +25,17 @@ export class DudaInstantSiteStack extends cdk.Stack {
 
   private createResources(resource: IResource, obj: object): IResource {
     for (const [key, value] of Object.entries(obj)) {
-      verbs.includes(key.toUpperCase()) 
-        ? resource.addMethod(key, new apiGateway.LambdaIntegration(this.createLambda(value)))
+      verbs.includes(key.toUpperCase())
+        ? resource.addMethod(key, new apiGateway.LambdaIntegration(this.createLambda(key.toUpperCase(),value)))
         : this.createResources(resource.addResource(key), value);
     }
-   
+
     return resource;
   }
 
   private createAPI(routes: object): LambdaRestApi {
     const api = new apiGateway.LambdaRestApi(this, 'duda', {
-      handler: this.createLambda('root'),
+      handler: this.createLambda('ANY','root'),
       proxy: false
     });
 
@@ -44,8 +44,8 @@ export class DudaInstantSiteStack extends cdk.Stack {
     return api;
   }
 
-  private createLambda(dir: string): Function {
-    return new lambda.Function(this, `${dir}Lambda`, this.getLambdaConfig(`lambdas/${dir}`));
+  private createLambda(verb: string, dir: string): Function {
+    return new lambda.Function(this, `${verb}-${dir}Lambda`, this.getLambdaConfig(`lambdas/${dir}`));
   }
 
   private getLambdaConfig(path: string): FunctionProps {

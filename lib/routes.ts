@@ -6,15 +6,15 @@ export default {
     "{siteName}": {
       "PATCH": "updateContent",
       "PUT": "updateContent",
-      "DELETE": "deleteSite"
+      "DELETE": "deleteSite",
       "versions": {
           "POST": "publishSite"
       }
     }
   },
   "users": {
+    "POST": "createUser",
     "{userId}": {
-      "POST": "createUser",
       "accessFor": {
         "{siteName}": {
           "POST": "grantUserAccess",
