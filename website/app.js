@@ -1,4 +1,4 @@
-const API_BASE = "https://wsr9qfo9t0.execute-api.us-east-1.amazonaws.com/prod";
+const API_BASE = "https://isipluhi96.execute-api.us-east-1.amazonaws.com/prod";
 const headers = {
   'Content-Type': 'application/json'
 }
@@ -8,75 +8,125 @@ const userId = "my-test-user-123";
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelector("input#instantSiteSubmitButton").addEventListener('click', (event) => {
 
-    const templateId = document.querySelector("[name='template_id']").value;
+    const templateId = document.querySelector("[name='templateId']").value;
     const businessName = document.querySelector("[name='business_name']").value;
-    const street = document.querySelector("[name='street']").value;
+    const streetAddress = document.querySelector("[name='streetAddress']").value;
     const city = document.querySelector("[name='city']").value;
-    const state = document.querySelector("[name='state']").value;
+    const region = document.querySelector("[name='region']").value;
     const country = document.querySelector("[name='country']").value;
-    const zipCode = document.querySelector("[name='zipCode']").value;
+    const postalCode = document.querySelector("[name='postalCode']").value;
     const phoneNumber = document.querySelector("[name='phoneNumber']").value;
     const email = document.querySelector("[name='email']").value;
+    const logoUrl = document.querySelector("[name='logoUrl']").value;
+    const overview = document.querySelector("[name='overview']").value;
+    const services = document.querySelector("[name='services']").value;
+    const aboutUs = document.querySelector("[name='aboutUs']").value;
     const businessImage = document.querySelector("[name='businessImage']").value;
     const businessDescription = document.querySelector("[name='business_description']").value;
-
-    return validate({
-      "template_id": templateId,
-      "site_details": {
-        "site_business_info": {
-          "business_name": businessName,
-          "address": {
-            "street": street,
-            "city": city,
-            "state": state,
-            "country": country,
-            "zip_code": zipCode
+    if (templateId && businessName && streetAddress && city && region && country && postalCode && phoneNumber && email && logoUrl && overview && services && aboutUs && businessImage && businessDescription) {
+      return validate({
+        templateId: templateId,
+        siteContent: {
+          "location_data":{
+            "phones":[
+              {
+                "phoneNumber":phoneNumber,
+                "label":"Main"
+              }
+            ],
+            "emails":[
+              {
+                "emailAddress":email,
+                "label":"Main"
+              }
+            ],
+            "label": businessName,
+            "social_accounts":{
+              "tripadvisor":null,
+              "youtube":null,
+              "facebook":null,
+              "yelp":null,
+              "pinterest":null,
+              "google_plus":null,
+              "linkedin":null,
+              "instagram":null,
+              "snapchat":null,
+              "twitter":null,
+              "rss":null,
+              "vimeo":null,
+              "reddit":null
+            },
+            "address":{
+              "streetAddress": streetAddress,
+              "postalCode": postalCode,
+              "region": region,
+              "city": city,
+              "country": country
+            },
+            "address_geolocation":`${streetAddress}, ${city}, ${region} ${postalCode}, ${country}"`,
+            "geo":{
+              "longitude":null,
+              "latitude":null
+            },
+            "logo_url":logoUrl,
+            "business_hours":[
+              {
+                "days":[
+                  "MON",
+                  "TUE",
+                  "WED",
+                  "THU",
+                  "FRI"
+                ],
+                "open":"08:00",
+                "close":"17:00"
+              }
+            ]
           },
-          "phone_number": phoneNumber,
-          "email": email,
-        },
-        "site_seo": {
-          "og_image": businessImage,
-          "title": businessName,
-          "description": businessDescription
+          "site_texts":{
+            "overview":overview,
+            "services":services,
+            "custom":[],
+            "about_us":aboutUs
+          },
+          "business_data":{
+            "name":businessName,
+            "logo_url":logoUrl
+          },
+          "site_images":[
+            {
+              "label":"Site Image",
+              "url":businessImage,
+              "alt":"Site Image"
+            }
+          ]
         }
-      }
-    });
-
+      });
+    } else {
+      alert("Complete all fields.");
+    }
   });
 });
 
 const validate = async function(data) {
-  console.log("validating....");
-  if (data.template_id.length > 0 &&
-  data.site_details.site_business_info.business_name.length > 0 &&
-  data.site_details.site_business_info.address.street.length > 0 &&
-  data.site_details.site_business_info.address.city.length > 0 &&
-  data.site_details.site_business_info.address.state.length > 0 &&
-  data.site_details.site_business_info.address.country.length > 0 &&
-  data.site_details.site_business_info.address.zip_code.length > 0 &&
-  data.site_details.site_business_info.phone_number.length > 0 &&
-  data.site_details.site_business_info.email.length > 0 &&
-  data.site_details.site_seo.og_image.length > 0 &&
-  data.site_details.site_seo.title.length > 0 &&
-  data.site_details.site_seo.description.length) {
-    console.log("Making a site with template: " + data.template_id);
-    document.querySelector("progress").value=20
-    const siteName = await createSite(data.template_id);
-    document.querySelector("progress").value=40
-    await uploadContent(siteName, data.site_details);
+    document.querySelector("progress").value=10
+    document.querySelector("#instantSiteSubmitButton").setAttribute("value","Creating site ...");
+    const siteName = await createSite(data.templateId);
+    document.querySelector("progress").value=30
+    document.querySelector("#instantSiteSubmitButton").setAttribute("value","Uploading content ...");
+    await uploadContent(siteName, data.siteContent);
     document.querySelector("progress").value=60
+    document.querySelector("#instantSiteSubmitButton").setAttribute("value","Creating user ...");
     await createUser(userId);
     document.querySelector("progress").value=80
+    document.querySelector("#instantSiteSubmitButton").setAttribute("value","Granting user access ...");
     await grantUserAccess(userId, siteName);
     document.querySelector("progress").value=90
+    document.querySelector("#instantSiteSubmitButton").setAttribute("value","Logging in ...");
     const ssolink = await getSSOLink(userId, siteName);
     document.querySelector("progress").value=100
-    document.querySelector("#instantSiteSubmitButton").setAttribute("value","Your site has been created, stand by.");
+    document.querySelector("#instantSiteSubmitButton").setAttribute("value","Redirecting ...");
     window.location.href = ssolink;
-  } else {
-    alert("Complete all fields.");
-  }
 }
 
 const createSite = async function(templateId) {
@@ -85,10 +135,10 @@ const createSite = async function(templateId) {
       method: 'POST',
       headers: headers,
       body: JSON.stringify({
-          template_id: templateId
+          templateId: templateId
       })
   };
-  const response = await fetch(url, options);
+  const response = await fetch(url, options)
   const json = await response.json();
   const siteName = json.siteName;
   return siteName
@@ -156,7 +206,7 @@ const getSites = async function() {
 }
 
 const getSSOLink = async function(userId, siteName) {
-  const url = `${API_BASE}/users/${siteName}/accessFor/${siteName}`
+  const url = `${API_BASE}/users/${userId}/accessFor/${siteName}`
   const options = {
       method: 'GET',
       headers: headers
@@ -167,7 +217,7 @@ const getSSOLink = async function(userId, siteName) {
 }
 
 const grantUserAccess = async function(userId, siteName) {
-  const url = `${API_BASE}/users/${siteName}/accessFor/${siteName}`
+  const url = `${API_BASE}/users/${userId}/accessFor/${siteName}`
   const options = {
       method: 'POST',
       headers: headers

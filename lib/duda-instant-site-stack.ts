@@ -34,9 +34,11 @@ export class DudaInstantSiteStack extends cdk.Stack {
 
   private createResources(resource: IResource, obj: object): IResource {
     for (const [key, value] of Object.entries(obj)) {
-      verbs.includes(key.toUpperCase())
-        ? resource.addMethod(key, new apiGateway.LambdaIntegration(this.createLambda(key.toUpperCase(),value)))
-        : this.createResources(resource.addResource(key), value);
+      key.toUpperCase() == "OPTIONS"
+        ? resource.addMethod(key, new apiGateway.LambdaIntegration(this.createOptionsHandler(key.toUpperCase(),value)))
+        : verbs.includes(key.toUpperCase())
+          ? resource.addMethod(key, new apiGateway.LambdaIntegration(this.createLambda(key.toUpperCase(),value)))
+          : this.createResources(resource.addResource(key), value);
     }
 
     return resource;
@@ -54,7 +56,11 @@ export class DudaInstantSiteStack extends cdk.Stack {
   }
 
   private createLambda(verb: string, dir: string): Function {
-    return new lambda.Function(this, `${verb}-${dir}Lambda`, this.getLambdaConfig(`lambdas/${dir}`));
+    return new lambda.Function(this, `${verb}-${dir}-Lambda`, this.getLambdaConfig(`lambdas/${dir}`));
+  }
+
+  private createOptionsHandler(verb: string, dir: string): Function {
+    return new lambda.Function(this, `${verb}-${dir}-Lambda`, this.getLambdaConfig(`lambdas/root`));
   }
 
   private getLambdaConfig(path: string): FunctionProps {
