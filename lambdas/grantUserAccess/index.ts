@@ -1,7 +1,7 @@
 // @ts-ignore
 import * as fetch from 'node-fetch';
 
-const { API_BASE, API_USER, API_PASS } = process.env
+const { API_BASE = '', API_USER = '', API_PASS = '' } = process.env
 const buffer = Buffer.from(`${API_USER}:${API_PASS}`)
 const API_AUTH = buffer.toString('base64')
 
@@ -22,10 +22,10 @@ export async function handler(event: any) {
 
   try {
 
-    await grantSiteAccess(event.pathParameters.userId, event.body.siteName)
+    await grantSiteAccess(event.pathParameters.userId, event.pathParameters.siteName)
 
     response.statusCode = 200
-    response.body = `{"status":"User ${event.pathParameters.userId} was granted access to site ${event.body.siteName}."}`
+    response.body = `{"status":"User ${event.pathParameters.userId} was granted access to site ${event.pathParameters.siteName}."}`
 
   } catch(e) {
 

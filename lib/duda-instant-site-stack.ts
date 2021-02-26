@@ -4,6 +4,7 @@ import * as apiGateway from '@aws-cdk/aws-apigateway'
 import * as dotenv from 'dotenv';
 import { Function, FunctionProps, LayerVersion } from '@aws-cdk/aws-lambda';
 import { IResource, LambdaRestApi } from '@aws-cdk/aws-apigateway';
+import { SPADeploy } from 'cdk-spa-deploy';
 import routes from './routes';
 
 dotenv.config();
@@ -21,21 +22,29 @@ export class DudaInstantSiteStack extends cdk.Stack {
 
     this.layer = this.createLayer();
     this.createAPI(routes);
+
+    // @ts-ignore
+    new SPADeploy(this, 'spaDeploy')
+      .createBasicSite({
+        indexDoc: 'index.html',
+        websiteFolder: './website'
+      });
+
   }
 
   private createResources(resource: IResource, obj: object): IResource {
     for (const [key, value] of Object.entries(obj)) {
-      verbs.includes(key.toUpperCase()) 
-        ? resource.addMethod(key, new apiGateway.LambdaIntegration(this.createLambda(value)))
+      verbs.includes(key.toUpperCase())
+        ? resource.addMethod(key, new apiGateway.LambdaIntegration(this.createLambda(key.toUpperCase(),value)))
         : this.createResources(resource.addResource(key), value);
     }
-   
+
     return resource;
   }
 
   private createAPI(routes: object): LambdaRestApi {
     const api = new apiGateway.LambdaRestApi(this, 'duda', {
-      handler: this.createLambda('root'),
+      handler: this.createLambda('ANY','root'),
       proxy: false
     });
 
@@ -44,8 +53,8 @@ export class DudaInstantSiteStack extends cdk.Stack {
     return api;
   }
 
-  private createLambda(dir: string): Function {
-    return new lambda.Function(this, `${dir}Lambda`, this.getLambdaConfig(`lambdas/${dir}`));
+  private createLambda(verb: string, dir: string): Function {
+    return new lambda.Function(this, `${verb}-${dir}Lambda`, this.getLambdaConfig(`lambdas/${dir}`));
   }
 
   private getLambdaConfig(path: string): FunctionProps {
@@ -53,6 +62,7 @@ export class DudaInstantSiteStack extends cdk.Stack {
       code: lambda.Code.fromAsset(path),
       handler: 'index.handler',
       runtime: lambda.Runtime.NODEJS_14_X,
+      timeout: cdk.Duration.seconds(20),
       environment,
       layers: [this.layer]
     }

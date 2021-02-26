@@ -1,7 +1,7 @@
 // @ts-ignore
 import * as fetch from 'node-fetch';
 
-const { API_BASE, API_USER, API_PASS } = process.env
+const { API_BASE = '', API_USER = '', API_PASS = '' } = process.env
 const buffer = Buffer.from(`${API_USER}:${API_PASS}`)
 const API_AUTH = buffer.toString('base64')
 
@@ -11,6 +11,7 @@ const headers = {
 }
 
 export async function handler(event: any) {
+
   var response = {
     body: '',
     statusCode: 400,
@@ -20,6 +21,7 @@ export async function handler(event: any) {
   }
 
   try {
+
     const templateId = JSON.parse(event.body).templateId
 
     const siteName = await createSite(templateId)
@@ -35,12 +37,12 @@ export async function handler(event: any) {
       "description": e
     })
   }
-    
+
     return response;
 
 }
 
-const createSite = async function(template: number) {
+const createSite = async function(template: string) {
 
     const url = `${API_BASE}/sites/multiscreen/create`
 

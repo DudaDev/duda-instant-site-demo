@@ -1,7 +1,7 @@
 // @ts-ignore
 import * as fetch from 'node-fetch';
 
-const { API_BASE, API_USER, API_PASS } = process.env
+const { API_BASE = '', API_USER = '', API_PASS = '' } = process.env
 const buffer = Buffer.from(`${API_USER}:${API_PASS}`)
 const API_AUTH = buffer.toString('base64')
 
@@ -22,7 +22,7 @@ export async function handler(event: any) {
 
   try {
 
-    const userId = await getUser(event.pathParameters.userId)
+    const userId = await getUser(JSON.parse(event.body).userId)
 
     response.statusCode = 200
     response.body = JSON.stringify({
@@ -42,12 +42,14 @@ export async function handler(event: any) {
 
 }
 
-const getUser = async function(event: any) {
+const getUser = async function(userId: string) {
 
-    const userId = 'xxxxxxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8)
-        return v.toString(16)
-    })
+    if (userId == '') {
+      userId = 'xxxxxxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8)
+          return v.toString(16)
+      })
+    }
 
     const url = `${API_BASE}/accounts/create`
 

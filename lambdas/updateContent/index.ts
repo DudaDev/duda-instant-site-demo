@@ -1,7 +1,7 @@
 // @ts-ignore
 import * as fetch from 'node-fetch';
 
-const { API_BASE, API_USER, API_PASS } = process.env
+const { API_BASE = '', API_USER = '', API_PASS = '' } = process.env
 const buffer = Buffer.from(`${API_USER}:${API_PASS}`)
 const API_AUTH = buffer.toString('base64')
 
@@ -10,7 +10,7 @@ const headers = {
   'Authorization': `Basic ${API_AUTH}`
 }
 
-exports.handler =  async function(event: any) {
+export async function handler(event: any) {
 
   var response = {
     body: '',

@@ -2,21 +2,25 @@ export default {
   "sites": {
     "POST": "createSite",
     "GET":  "getSites",
-    "{site_name}": {
+    "DELETE": "deleteSites",
+    "{siteName}": {
+      "PATCH": "updateContent",
+      "PUT": "updateContent",
       "DELETE": "deleteSite",
-      "release": {
-        "POST": "publishSite"
+      "versions": {
+          "POST": "publishSite"
       }
     }
   },
   "users": {
     "POST": "createUser",
-    "access": {
-      "POST": "grantUserAccess",
-      "{site_name}": {
-        "GET": "getSSOLink"
+    "{userId}": {
+      "accessFor": {
+        "{siteName}": {
+          "POST": "grantUserAccess",
+          "GET": "getSSOLink"
+        }
       }
     }
   }
 };
-  
