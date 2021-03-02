@@ -1,35 +1,31 @@
 // @ts-ignore
-import * as fetch from 'node-fetch';
-
-const { API_BASE = '', API_USER = '', API_PASS = '' } = process.env
-const buffer = Buffer.from(`${API_USER}:${API_PASS}`)
-const API_AUTH = buffer.toString('base64')
-
-const headers = {
-  'Content-Type': 'application/json',
-  'Authorization': `Basic ${API_AUTH}`
-}
+import * as fetch from 'node-fetch'
+import headers from '../headers'
+const { API_BASE = '' } = process.env
 
 export async function handler(event: any) {
 
   var response = {
     body: '',
     statusCode: 400,
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Credentials": "false",
-      "Access-Control-Allow-Methods": "OPTIONS,GET,PUT,POST,DELETE,PATCH",
-    }
+    headers: headers.response
   }
 
   try {
 
-    await deleteSite(event.pathParameters.siteName)
+    const result = await deleteSite(event.pathParameters.siteName)
+    response.statusCode = result.statusCode
 
-    response.statusCode = 200
-    response.body = `{"status":"Site ${event.pathParameters.siteName} deleted."}`
+    if (result.error) {
+      response.body = JSON.stringify({ 
+        "error": "Duda API responded with error.",
+        "description": result.message 
+      })
+    } else {
+      response.body = JSON.stringify({
+        "status": `Site ${event.pathParameters.siteName} deleted.`
+      })
+    }
 
   } catch(e) {
 
@@ -50,9 +46,20 @@ const deleteSite = async function(siteName: any) {
 
     const options = {
       method: 'DELETE',
-      headers: headers
+      headers: headers.request
     }
 
-    return fetch(url, options)
+    const response = await fetch(url, options)
+
+    var result = {
+      statusCode: 500,
+      error: true,
+      message: await response.json()
+    }
+
+    result.statusCode = response.statusCode
+    result.error = response.ok
+
+    return result
 
 }

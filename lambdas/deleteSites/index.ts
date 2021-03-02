@@ -1,36 +1,58 @@
 // @ts-ignore
-import * as fetch from 'node-fetch';
-
-const { API_BASE = '', API_USER = '', API_PASS = '' } = process.env
-const buffer = Buffer.from(`${API_USER}:${API_PASS}`)
-const API_AUTH = buffer.toString('base64')
-
-const headers = {
-  'Content-Type': 'application/json',
-  'Authorization': `Basic ${API_AUTH}`
-}
+import * as fetch from 'node-fetch'
+import headers from '../headers'
+const { API_BASE = '' } = process.env
 
 export async function handler(event: any) {
 
   var response = {
     body: '',
     statusCode: 400,
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Credentials": "false",
-      "Access-Control-Allow-Methods": "OPTIONS,GET,PUT,POST,DELETE,PATCH",
-    }
+    headers: headers.response
   }
 
   try {
 
     const sites = event.body
-    sites.forEach(async (site: any) => await deleteSite(site.siteName))
 
-    response.statusCode = 200
-    response.body = `{"status":"Site ${event.pathParameters.siteName} deleted."}`
+    var error = false
+    var message = ''
+    var status = response.statusCode
+
+    var deleted: any[] = []
+    var notDeleted: any[] = []
+
+    sites.forEach(async (site: any) => {
+      const result = await deleteSite(site.siteName)
+      if (result.error) {
+        error = result.error
+        message = result.message
+        status = result.statusCode
+        notDeleted.push(site)
+      } else {
+        deleted.push(site)
+      }
+    })
+
+    response.statusCode = status
+
+    if (error) {
+      if (deleted.length == 0) {
+        response.body = JSON.stringify({
+          "error": `Sites not deleted: ${JSON.stringify(notDeleted)}`,
+          "description": message 
+        })
+      } else if (deleted.length > 0) {
+        response.body = JSON.stringify({
+          "error": `Some sites were deleted: ${JSON.stringify(deleted)}`,
+          "description": message 
+        })
+      }
+    } else {
+      response.body = JSON.stringify({
+        "status": "All provided sites were deleted."
+      })
+    }
 
   } catch(e) {
 
@@ -51,9 +73,15 @@ const deleteSite = async function(siteName: any) {
 
     const options = {
       method: 'DELETE',
-      headers: headers
+      headers: headers.request
     }
 
-    return fetch(url, options)
+    const response = await fetch(url, options)
+    const result = await response.json()
+
+    result.error = response.ok
+    result.statusCode = response.statusCode
+
+    return result
 
 }

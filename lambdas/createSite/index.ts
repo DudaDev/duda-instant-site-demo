@@ -1,66 +1,65 @@
 // @ts-ignore
-import * as fetch from 'node-fetch';
-
-const { API_BASE = '', API_USER = '', API_PASS = '' } = process.env
-const buffer = Buffer.from(`${API_USER}:${API_PASS}`)
-const API_AUTH = buffer.toString('base64')
-
-const headers = {
-  'Content-Type': 'application/json',
-  'Authorization': `Basic ${API_AUTH}`
-}
+import * as fetch from 'node-fetch'
+import headers from '../headers'
+const { API_BASE = '' } = process.env
 
 export async function handler(event: any) {
 
   var response = {
     body: '',
     statusCode: 400,
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Credentials": "false",
-      "Access-Control-Allow-Methods": "OPTIONS,GET,PUT,POST,DELETE,PATCH",
-    }
+    headers: headers.response
   }
 
   try {
 
     const templateId = JSON.parse(event.body).templateId
+    const result = await createSite(templateId)
+    response.statusCode = result.statusCode
 
-    const siteName = await createSite(templateId)
-    response.statusCode = 200
-    response.body = JSON.stringify({
-      'siteName': siteName
-    })
+    if (result.error) {
+      response.body = JSON.stringify({ 
+        "error": "Duda API responded with error.",
+        "description": result.message 
+      })
+    } else {
+      response.body = JSON.stringify({
+        'siteName': result['site_name']
+      })
+    }
 
   } catch(e) {
+
     response.statusCode = 500
     response.body = JSON.stringify({
       "error": `Problem handling ${event.httpMethod} on resource ${event.resource}`,
       "description": e
     })
+
   }
 
-    return response;
+  return response
 
 }
 
-const createSite = async function(template: string) {
+const createSite = async function(template: object) {
 
     const url = `${API_BASE}/sites/multiscreen/create`
 
     const options = {
       method: 'POST',
-      headers: headers,
+      headers: headers.request,
       body: JSON.stringify({
         template_id: template
       })
     }
 
     const response = await fetch(url, options)
-    const json = await response.json()
+    const result = await response.json()
 
-    return json['site_name']
+    result.error = response.ok
+    result.statusCode = response.statusCode
+
+    return result
 
 }

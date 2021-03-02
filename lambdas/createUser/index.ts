@@ -1,37 +1,31 @@
 // @ts-ignore
-import * as fetch from 'node-fetch';
-
-const { API_BASE = '', API_USER = '', API_PASS = '' } = process.env
-const buffer = Buffer.from(`${API_USER}:${API_PASS}`)
-const API_AUTH = buffer.toString('base64')
-
-const headers = {
-  'Content-Type': 'application/json',
-  'Authorization': `Basic ${API_AUTH}`
-}
+import * as fetch from 'node-fetch'
+import headers from '../headers'
+const { API_BASE = '' } = process.env
 
 export async function handler(event: any) {
 
   var response = {
     body: '',
     statusCode: 400,
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Credentials": "false",
-      "Access-Control-Allow-Methods": "OPTIONS,GET,PUT,POST,DELETE,PATCH",
-    }
+    headers: headers.response
   }
+  const userId = JSON.parse(event.body).userId
 
   try {
 
-    const userId = await getUser(JSON.parse(event.body).userId)
+    const result = await getUser(userId)
+    response.statusCode = result.statusCode
 
-    response.statusCode = 200
-    response.body = JSON.stringify({
-      "userId": userId
-    })
+    if (result.error) {
+      response.body = JSON.stringify({
+        "error": result.message
+      })
+    } else {
+      response.body = JSON.stringify({
+        "userId": userId
+      })
+    }
 
   } catch(e) {
 
@@ -59,15 +53,19 @@ const getUser = async function(userId: string) {
 
     const options = {
       method: 'POST',
-      headers: headers,
+      headers: headers.request,
       body: JSON.stringify({
         account_type: 'CUSTOMER',
         account_name: userId
       })
     }
 
-    await fetch(url, options)
+    const response = await fetch(url, options)
+    const result = await response.json()
 
-    return userId
+    result.error = response.ok
+    result.statusCode = response.statusCode
+
+    return result
 
 }
