@@ -23,11 +23,11 @@ export class DudaInstantSiteStack extends cdk.Stack {
     this.layer = this.createLayer();
     this.createAPI(routes);
 
-    // @ts-ignore
+    // // @ts-ignore
     new SPADeploy(this, 'spaDeploy')
-      .createBasicSite({
+      .createSiteWithCloudfront({
         indexDoc: 'index.html',
-        websiteFolder: './website'
+        websiteFolder: '../frontend/build'
       });
 
   }

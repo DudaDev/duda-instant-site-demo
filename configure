@@ -1,0 +1,2 @@
+#!/bin/bash
+echo 'Prompt for Duda API username and password, install dependencies, pick aws profile,  etc'
