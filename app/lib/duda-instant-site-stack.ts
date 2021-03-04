@@ -27,7 +27,7 @@ export class DudaInstantSiteStack extends cdk.Stack {
     new SPADeploy(this, 'spaDeploy')
       .createSiteWithCloudfront({
         indexDoc: 'index.html',
-        websiteFolder: '../frontend/build'
+        websiteFolder: `${__dirname}/../frontend/build` 
       });
 
   }
