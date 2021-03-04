@@ -1,6 +1,7 @@
 // @ts-ignore
-import * as fetch from 'node-fetch';
-import headers from '../headers'
+import * as fetch from 'node-fetch'
+// @ts-ignore
+import * as headers from 'duda-aws-headers'
 const { API_BASE = '' } = process.env
 
 export async function handler(event: any) {

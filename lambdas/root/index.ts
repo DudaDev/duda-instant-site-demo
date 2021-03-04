@@ -1,5 +1,5 @@
 // @ts-ignore
-import headers from '../headers'
+import * as headers from 'duda-aws-headers'
 
 export async function handler() {
   return {
