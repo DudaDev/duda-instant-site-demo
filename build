@@ -1,0 +1,19 @@
+#!/bin/bash
+cd app/ &&
+npm install &&
+npm run build &&
+cd layers/nodejs/ &&
+cd duda-aws-headers/ &&
+npm install &&
+npm run build &&
+cd .. &&
+mkdir -p node_modules &&
+rm -rf node_modules/duda-aws-headers &&
+cp -r duda-aws-headers node_modules/ &&
+npm install &&
+cd ../../../frontend &&
+npm install &&
+npm run build &&
+cd .. &&
+echo 'Build successful. Try ./deploy' &&
+exit 1

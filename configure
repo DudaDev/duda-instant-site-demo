@@ -1,2 +1,22 @@
 #!/bin/bash
-echo 'Prompt for Duda API username and password, install dependencies, pick aws profile,  etc'
+FILE=./.env
+if test -f "$FILE"; then
+    echo "Found .env file."
+else
+    echo ""
+    echo "We need to generate your .env"
+    echo ""
+    read -p 'Enter your Duda API Username: ' username &&
+    read -p 'Enter your Duda API Password: ' password && 
+    echo "# Rename this file to .env and update the values below.
+# API credentials can be obtained by contacting support or your account manager.
+#
+# Real environment variables win over .env files.
+# DO NOT DEFINE PRODUCTION SECRETS IN THIS FILE NOR IN ANY OTHER COMMITTED FILES.
+
+API_BASE=https://api.duda.co/api
+API_USER=$username
+API_PASS=$password" > $FILE
+    echo ".env file generated."
+fi
+exit 1

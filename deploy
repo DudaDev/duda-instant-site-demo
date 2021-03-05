@@ -1,0 +1,15 @@
+#!/bin/bash
+echo 'Building...' &&
+cd app &&
+npm install &&
+npm run build &&
+cd ../frontend &&
+npm install &&
+npm run build &&
+echo 'Build completed without error.' &&
+cd ../app &&
+cdk deploy &&
+cd ..
+echo ''
+echo 'Duda Instant Site Demo Deployed Successfully'
+exit 1
