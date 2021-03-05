@@ -1,0 +1,40 @@
+header {
+    height: 85px;
+    background-color: white;
+    padding: 10px 30px 10px 30px;
+    box-sizing: border-box;
+}
+
+.orangeline {
+    border-bottom: 5px solid #fa653b;
+}
+
+header img {
+    height: 40px;
+    display: inline;
+    margin: 10px 20px 0px 0px;
+}
+
+h1 {
+    display: inline;
+    color: #fa653b;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-bottom: 40px;
+}
+
+nav {
+    display: inline;
+    float: right;
+    margin-top: 30px;
+}
+
+nav a {
+    color: #fa653b;
+    text-decoration: none;
+    margin-left: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
