@@ -23,20 +23,22 @@ export class DudaInstantSiteStack extends cdk.Stack {
     this.layer = this.createLayer();
     this.createAPI(routes);
 
-    // // @ts-ignore
-    new SPADeploy(this, 'spaDeploy')
+    // @ts-ignore
+    new SPADeploy(this, 'cfDeploy')
       .createSiteWithCloudfront({
         indexDoc: 'index.html',
-        websiteFolder: `${__dirname}/../frontend/build` 
+        websiteFolder: '../frontend/build'
       });
 
   }
 
   private createResources(resource: IResource, obj: object): IResource {
     for (const [key, value] of Object.entries(obj)) {
-      verbs.includes(key.toUpperCase())
-        ? resource.addMethod(key, new apiGateway.LambdaIntegration(this.createLambda(key.toUpperCase(),value)))
-        : this.createResources(resource.addResource(key), value);
+      key.toUpperCase() == "OPTIONS"
+        ? resource.addMethod(key, new apiGateway.LambdaIntegration(this.createOptionsHandler(key.toUpperCase(),value)))
+        : verbs.includes(key.toUpperCase())
+          ? resource.addMethod(key, new apiGateway.LambdaIntegration(this.createLambda(key.toUpperCase(),value)))
+          : this.createResources(resource.addResource(key), value);
     }
 
     return resource;
@@ -54,7 +56,11 @@ export class DudaInstantSiteStack extends cdk.Stack {
   }
 
   private createLambda(verb: string, dir: string): Function {
-    return new lambda.Function(this, `${verb}-${dir}-Lambda`, this.getLambdaConfig(`lambdas/${verb=="OPTIONS"?'root':dir}`));
+    return new lambda.Function(this, `${verb}-${dir}-Lambda`, this.getLambdaConfig(`lambdas/${dir}`));
+  }
+
+  private createOptionsHandler(verb: string, dir: string): Function {
+    return new lambda.Function(this, `${verb}-${dir}-Lambda`, this.getLambdaConfig(`lambdas/root`));
   }
 
   private getLambdaConfig(path: string): FunctionProps {
