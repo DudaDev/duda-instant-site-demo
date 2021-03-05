@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+require("source-map-support/register");
+const cdk = require("@aws-cdk/core");
+const duda_instant_site_stack_1 = require("../lib/duda-instant-site-stack");
+const app = new cdk.App();
+new duda_instant_site_stack_1.DudaInstantSiteStack(app, 'DudaInstantSiteStack');
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZHVkYS1pbnN0YW50LXNpdGUuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJkdWRhLWluc3RhbnQtc2l0ZS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7QUFDQSx1Q0FBcUM7QUFDckMscUNBQXFDO0FBQ3JDLDRFQUFzRTtBQUV0RSxNQUFNLEdBQUcsR0FBRyxJQUFJLEdBQUcsQ0FBQyxHQUFHLEVBQUUsQ0FBQztBQUMxQixJQUFJLDhDQUFvQixDQUFDLEdBQUcsRUFBRSxzQkFBc0IsQ0FBQyxDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiIyEvdXNyL2Jpbi9lbnYgbm9kZVxuaW1wb3J0ICdzb3VyY2UtbWFwLXN1cHBvcnQvcmVnaXN0ZXInO1xuaW1wb3J0ICogYXMgY2RrIGZyb20gJ0Bhd3MtY2RrL2NvcmUnO1xuaW1wb3J0IHsgRHVkYUluc3RhbnRTaXRlU3RhY2sgfSBmcm9tICcuLi9saWIvZHVkYS1pbnN0YW50LXNpdGUtc3RhY2snO1xuXG5jb25zdCBhcHAgPSBuZXcgY2RrLkFwcCgpO1xubmV3IER1ZGFJbnN0YW50U2l0ZVN0YWNrKGFwcCwgJ0R1ZGFJbnN0YW50U2l0ZVN0YWNrJyk7XG4iXX0=

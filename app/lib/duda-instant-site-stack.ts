@@ -6,12 +6,19 @@ import { Function, FunctionProps, LayerVersion } from '@aws-cdk/aws-lambda';
 import { IResource, LambdaRestApi } from '@aws-cdk/aws-apigateway';
 import { SPADeploy } from 'cdk-spa-deploy';
 import routes from './routes';
+import * as pjson from '../package.json';
 
 dotenv.config();
 
 const verbs = ['GET','POST','PUT','PATCH','DELETE'];
 const environment = (
-  ({ API_USER = '', API_PASS = '', API_BASE = '' }) => ({ API_USER, API_PASS, API_BASE })
+  ({ API_USER = '', API_PASS = '', API_BASE = '' }) => ({
+      API_USER,
+      API_PASS,
+      API_BASE,
+      VERSION: pjson.version,
+      NODE_PATH: '/opt/nodejs/lib/:/opt/nodejs/node_modules:$LAMBDA_RUNTIME_DIR/node_modules'
+  })
 )(process.env);
 
 export class DudaInstantSiteStack extends cdk.Stack {
