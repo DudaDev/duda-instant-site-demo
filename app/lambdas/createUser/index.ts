@@ -19,8 +19,12 @@ export async function handler(event: any) {
     response.statusCode = result.statusCode
 
     if (result.error) {
-      response.body = JSON.stringify({
-        "error": result.message
+      result.statusCode == 403 ? response.body = JSON.stringify({ 
+        "error": "Duda API responded with error.",
+        "description": "Unable to authenticate with the Duda API" 
+      }) : response.body = JSON.stringify({ 
+        "error": "Duda API responded with error.",
+        "description": JSON.stringify(result.message)  
       })
     } else {
       response.body = JSON.stringify({

@@ -17,10 +17,13 @@ export async function handler(event: any) {
     const result = await grantSiteAccess(event.pathParameters.userId, event.pathParameters.siteName)
 
     if (result.error) {
-      response.body = JSON.stringify({ 
+      result.statusCode == 403 ? response.body = JSON.stringify({ 
         "error": "Duda API responded with error.",
-        "description": result.message 
-    })
+        "description": "Unable to authenticate with the Duda API" 
+      }) : response.body = JSON.stringify({ 
+        "error": "Duda API responded with error.",
+        "description": JSON.stringify(result.message)  
+      })
     } else {
       response.body = JSON.stringify({
         "status": `User ${event.pathParameters.userId} was granted access to site ${event.pathParameters.siteName}.`

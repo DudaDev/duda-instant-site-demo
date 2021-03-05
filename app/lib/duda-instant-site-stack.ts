@@ -79,5 +79,5 @@ export class DudaInstantSiteStack extends cdk.Stack {
       code: lambda.Code.fromAsset('layers'),
       compatibleRuntimes: [lambda.Runtime.NODEJS_14_X],
       });
-  }
+    }
 }

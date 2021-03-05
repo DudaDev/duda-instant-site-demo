@@ -27,7 +27,7 @@ export async function handler(event: any) {
       const result = await deleteSite(site.siteName)
       if (result.error) {
         error = result.error
-        message = result.message
+        message = JSON.stringify(result.message)
         status = result.statusCode
         notDeleted.push(site)
       } else {

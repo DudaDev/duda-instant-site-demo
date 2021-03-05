@@ -1,7 +1,7 @@
 // @ts-ignore
 import * as fetch from 'node-fetch'
 // @ts-ignore
-import * as headers from 'duda-aws-headers'
+import headers = require('duda-aws-headers')
 const { API_BASE = '' } = process.env
 
 export async function handler(event: any) {
@@ -18,10 +18,13 @@ export async function handler(event: any) {
     response.statusCode = result.statusCode
 
     if (result.error) {
-      response.body = JSON.stringify({ 
+      result.statusCode == 403 ? response.body = JSON.stringify({ 
           "error": "Duda API responded with error.",
-          "description": result.message 
-      })
+          "description": "Unable to authenticate with the Duda API" 
+      }) : response.body = JSON.stringify({ 
+        "error": "Duda API responded with error.",
+        "description": "Unknown error." 
+      }) 
     } else {
       response.body = JSON.stringify(result)
     }
