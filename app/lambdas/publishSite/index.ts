@@ -54,11 +54,21 @@ const publishSite = async function(siteName: any) {
     }
 
     const response = await fetch(url, options)
-    const result = await response.json()
-
-    result.error = response.ok
+    
+    var result = {
+      statusCode: 500,
+      error: true,
+      message: ''
+    }
+  
     result.statusCode = response.statusCode
-
+    result.error = response.error
+    
+    if (response.error) {
+      const error = await response.json()
+      result.message = error.message
+    }
+  
     return result
 
 }

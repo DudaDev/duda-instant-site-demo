@@ -46,7 +46,7 @@ export async function handler(event: any) {
 
 }
 
-const createSite = async function(template: object) {
+const createSite = async function(template: string) {
 
     const url = `${API_BASE}/sites/multiscreen/create`
 
@@ -59,11 +59,25 @@ const createSite = async function(template: object) {
     }
 
     const response = await fetch(url, options)
-    const result = await response.json()
+    if (response.error) {
+      
+      var result = {
+        statusCode: 500,
+        error: true,
+        message: ''
+      }
+  
+      result.statusCode = response.statusCode
+      result.error = response.error
+      const error = await response.json()
+      result.message = error.message
+  
+      return result
 
-    result.error = response.ok
-    result.statusCode = response.statusCode
+    } else {
 
-    return result
+      return await response.json()
+
+    }
 
 }

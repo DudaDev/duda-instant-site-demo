@@ -53,7 +53,7 @@ const getSites = async function() {
     const response = await fetch(url, options)
     
     if (response.error) {
-      
+
       var result = {
         statusCode: 500,
         error: true,
@@ -61,7 +61,9 @@ const getSites = async function() {
       }
   
       result.statusCode = response.statusCode
-      result.error = response.ok
+      result.error = response.error
+      const error = await response.json()
+      result.message = error.message
   
       return result
 

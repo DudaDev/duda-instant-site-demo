@@ -2,6 +2,7 @@
 import * as fetch from 'node-fetch'
 // @ts-ignore
 import headers from 'headers'
+import { RestApi } from '@aws-cdk/aws-apigateway'
 const { API_BASE = '', API_USER = '', API_PASS = '' } = process.env
 
 export async function handler(event: any) {
@@ -55,10 +56,20 @@ const uploadData = async function(siteName: any, content: any) {
   }
 
   const response = await fetch(url, options)
-  const result = await response.json()
 
-  result.error = response.ok
+  var result = {
+    statusCode: 500,
+    error: true,
+    message: ''
+  }
+
   result.statusCode = response.statusCode
+  result.error = response.error
+  
+  if (response.error) {
+    const error = await response.json()
+    result.message = error.message
+  }
 
   return result
 

@@ -75,23 +75,20 @@ const grantSiteAccess = async function(userId: any, siteName: any) {
 
     const response = await fetch(url, options)
 
-    if (response.error) {
-      
-      var result = {
-        statusCode: 500,
-        error: true,
-        message: ''
-      }
-  
-      result.statusCode = response.statusCode
-      result.error = response.ok
-  
-      return result
-
-    } else {
-
-      return await response.json()
-
+    var result = {
+      statusCode: 500,
+      error: true,
+      message: ''
     }
+  
+    result.statusCode = response.statusCode
+    result.error = response.error
+    
+    if (response.error) {
+      const error = await response.json()
+      result.message = error.message
+    }
+  
+    return result
 
 }
