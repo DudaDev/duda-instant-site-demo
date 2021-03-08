@@ -1,9 +1,8 @@
 // @ts-ignore
 import * as fetch from 'node-fetch'
 // @ts-ignore
-import * as headers from 'headers'
-
-const { API_BASE = '' } = process.env
+import headers from 'headers'
+const { API_BASE = '', API_USER = '', API_PASS = '' } = process.env
 
 export async function handler(event: any) {
 
@@ -28,7 +27,7 @@ export async function handler(event: any) {
       const result = await deleteSite(site.siteName)
       if (result.error) {
         error = result.error
-        message = result.message
+        message = JSON.stringify(result.message)
         status = result.statusCode
         notDeleted.push(site)
       } else {
@@ -42,12 +41,12 @@ export async function handler(event: any) {
       if (deleted.length == 0) {
         response.body = JSON.stringify({
           "error": `Sites not deleted: ${JSON.stringify(notDeleted)}`,
-          "description": message
+          "description": message 
         })
       } else if (deleted.length > 0) {
         response.body = JSON.stringify({
           "error": `Some sites were deleted: ${JSON.stringify(deleted)}`,
-          "description": message
+          "description": message 
         })
       }
     } else {
@@ -75,7 +74,7 @@ const deleteSite = async function(siteName: any) {
 
     const options = {
       method: 'DELETE',
-      headers: headers.request
+      headers: headers.request(API_USER, API_PASS)
     }
 
     const response = await fetch(url, options)

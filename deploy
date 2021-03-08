@@ -1,0 +1,19 @@
+#!/bin/bash
+AWS_CREDENTIALS=~/.aws/credentials
+DOTENV=./app/.env
+
+if test -f "$DOTENV"; then
+    if test -f "$AWS_CREDENTIALS"; then
+        cd app &&
+        cdk deploy &&
+        echo ''
+        echo 'Duda Instant Site Demo Deployed Successfully'
+        exit 1
+    else
+        echo "Your AWS credentials are missing. https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html"
+        exit 0
+    fi
+    echo "Your .env is missing. Try running ./configure first."
+    exit 0
+fi
+

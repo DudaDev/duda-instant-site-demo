@@ -1,10 +1,9 @@
-const { API_BASE = '', API_USER = '', API_PASS = '' } = process.env
-const AUTH = Buffer.from(`${API_USER}:${API_PASS}`).toString('base64')
-
-export default {
-    "request": {
-        "Content-Type": "application/json",
-        "Authorization": `Basic ${AUTH}`
+const headers = {
+    "request": (user: string,pass: string) => {
+        return {
+            "Content-Type": "application/json",
+            "Authorization": `Basic ${Buffer.from(`${user}:${pass}`).toString('base64')}`
+        }
     },
     "response": {
         "Content-Type": "application/json",
@@ -13,4 +12,5 @@ export default {
         "Access-Control-Allow-Credentials": "false",
         "Access-Control-Allow-Methods": "OPTIONS,GET,PUT,POST,DELETE,PATCH"
     }
-};
+}
+export default headers
