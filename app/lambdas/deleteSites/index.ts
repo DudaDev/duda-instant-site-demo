@@ -1,7 +1,8 @@
 // @ts-ignore
 import * as fetch from 'node-fetch'
 // @ts-ignore
-import * as headers from 'duda-aws-headers'
+import * as headers from 'headers'
+
 const { API_BASE = '' } = process.env
 
 export async function handler(event: any) {
@@ -41,12 +42,12 @@ export async function handler(event: any) {
       if (deleted.length == 0) {
         response.body = JSON.stringify({
           "error": `Sites not deleted: ${JSON.stringify(notDeleted)}`,
-          "description": message 
+          "description": message
         })
       } else if (deleted.length > 0) {
         response.body = JSON.stringify({
           "error": `Some sites were deleted: ${JSON.stringify(deleted)}`,
-          "description": message 
+          "description": message
         })
       }
     } else {
