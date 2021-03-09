@@ -2,7 +2,6 @@ export default {
   "sites": {
     "POST": "createSite",
     "GET":  "getSites",
-    "DELETE": "deleteSites",
     "OPTIONS": "sitesOptions",
     "{siteName}": {
       "PATCH": "updateContent",

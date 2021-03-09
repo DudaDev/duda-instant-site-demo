@@ -2,7 +2,7 @@
 import * as fetch from 'node-fetch'
 // @ts-ignore
 import headers from 'headers'
-const { API_BASE = '' } = process.env
+const { API_BASE = '', API_USER = '', API_PASS = '' } = process.env
 
 export async function handler(event: any) {
 
@@ -49,7 +49,7 @@ const grantSiteAccess = async function(userId: any, siteName: any) {
 
     const options = {
       method: 'POST',
-      headers: headers.request,
+      headers: headers.request(API_USER, API_PASS),
       body: JSON.stringify({
         permissions: [
           'STATS_TAB',

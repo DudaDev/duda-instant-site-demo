@@ -55,25 +55,20 @@ const deleteSite = async function(siteName: any) {
 
     const response = await fetch(url, options)
 
-    if (response.error) {
-      
-      var result = {
-        statusCode: 500,
-        error: true,
-        message: ''
-      }
+    var result = {
+      statusCode: 500,
+      error: true,
+      message: ''
+    }
   
-      result.statusCode = response.statusCode
-      result.error = response.error
+    result.statusCode = response.statusCode
+    result.error = response.error
+    
+    if (response.error) {
       const error = await response.json()
       result.message = error.message
-  
-      return result
-
-    } else {
-
-      return await response.json()
-
     }
+  
+    return result
 
 }
