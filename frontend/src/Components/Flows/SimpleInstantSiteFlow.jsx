@@ -1,4 +1,15 @@
 import Duda from '../../Utilities/Duda'
+import 'fontsource-roboto'
+import Typography from '@material-ui/core/Typography'
+const { FormControl, 
+        TextField, 
+        Button, 
+        Select, 
+        MenuItem,
+        LinearProgress,
+        Grid
+} = require('@material-ui/core/')
+const { makeStyles, ThemeProvider } = require('@material-ui/core/styles') 
 
 function SimpleInstantSiteFlow() {
   // Duda.createSite('1026287')
@@ -17,42 +28,51 @@ function SimpleInstantSiteFlow() {
   //     console.log(`Error creating site!: ${error.message}`)
   //   })
   return (
-      <div className='container instantSiteForm'>
-        <h1>Simple Instant Site</h1>
-        <p>Enter your business information below to create a site:</p>
-        <div id="instantSite" action="#">
-            <h2>Template</h2>
-            <select class="block" name="templateId">
-            <option value="1013306">Creative Portfolio</option>
-            <option value="1008302">Ice Cream Shop</option>
-            <option value="1005052">Soap & Suds</option>
-            <option value="1002785">My Bicycle Blog</option>
-            </select>
-            <h2>Business Details</h2>
-            <input class="block" type="text" name="business_name" placeholder="Business Name"/>
-            <textarea class="block" type="text" rows="4" name="overview" placeholder="Overview"></textarea>
-            <textarea class="block" type="text" rows="4" name="aboutUs" placeholder="About Us"></textarea>
-            <textarea class="block" type="text" rows="4" name="services" placeholder="Services"></textarea>
-            <h2>Address</h2>
-            <input class="block" type="text" name="streetAddress" placeholder="Street"/>
-            <input class="inline" type="text" name="city" placeholder="City"/>
-            <input class="inline" type="text" name="region" placeholder="Region"/>
-            <input class="inline" type="text" name="country" placeholder="Country"/>
-            <input class="inline" type="text" name="postalCode" placeholder="Postal Code"/>
+    <Grid container>
+      <Grid item xs={12}>
+        <FormControl id="instantSite" action="#">
+        
+          <Typography variant='h4'>Simple Instant Site</Typography>
+          <Typography variant='p'>Enter your business information below to create a site:</Typography>
+          
+          <Select value={""} onChange={''} displayEmpty>
+            <MenuItem value="" name="templateId">
+              <em>Pick a template:</em>
+            </MenuItem>
+            <MenuItem value={1013306}>Creative Portfolio</MenuItem>
+            <MenuItem value={1008302}>Ice Cream Shop</MenuItem>
+            <MenuItem value={1005052}>Soap & Suds</MenuItem>
+            <MenuItem value={1002785}>My Bicycle Blog</MenuItem>
+          </Select>
 
-            <h2>Contact Information</h2>
-            <input class="block" type="text" name="phoneNumber" placeholder="Phone Number"/>
-            <input class="block" type="text" name="email" placeholder="Email"/>
+          <Typography variant='h6'>Business Details</Typography>
+          <TextField variant="filled" name="business_name" label="Business Name"/>
+          <TextField variant="filled" multiline rowsMax="4" rows="4" name="overview" label="Overview"/>
+          <TextField variant="filled" multiline rowsMax="4" rows="4" name="aboutUs" label="About Us"/>
+          <TextField variant="filled" multiline rowsMax="4" rows="4" name="services" label="Services"/>
 
-            <h2>Content</h2>
-            <input class="block" type="text" name="businessImage" placeholder="Background Image URL"/>
-            <input class="block" type="text" name="logoUrl" placeholder="Logo Image URL"/>
-            <textarea class="block" type="text" rows="4" name="business_description" placeholder="Description"></textarea>
-            <progress max="100" value="0"></progress>
-            <input class="block" type="submit" id="instantSiteSubmitButton" value="Create Site" />
+          <Typography variant='h6'>Address</Typography>
+          <TextField variant="filled" name="streetAddress" label="Street"/>
+          <TextField variant="filled" name="city" label="City"/>
+          <TextField variant="filled" name="region" label="Region"/>
+          <TextField variant="filled" name="country" label="Country"/>
+          <TextField variant="filled" name="postalCode" label="Postal Code"/>
 
-        </div>
-      </div>
+          <Typography variant='h6'>Contact Information</Typography>
+          <TextField variant="filled" name="phoneNumber" label="Phone Number" placeholder="(800) 867-5309"/>
+          <TextField variant="filled" name="email" label="Email" placeholder="sales@company.site"/>
+
+          <Typography variant='h6'>Content</Typography>
+          <TextField variant="filled" name="businessImage" label="Background Image URL" placeholder="https://files.host/background.jpg"/>
+          <TextField variant="filled" name="logoUrl" label="Logo Image URL" placeholder="https://files.host/files/logo.png"/>
+          <TextField variant="filled" multiline rowsMax="4" rows='4' name="business_description" label="Description"/>
+
+          <LinearProgress variant="determinate" value={50} />
+          <Button onClick={''} variant="contained" color="primary">Create Site</Button>
+
+        </FormControl>
+      </Grid>
+    </Grid>
   );
 }
 
