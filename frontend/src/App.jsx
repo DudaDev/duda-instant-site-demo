@@ -30,9 +30,53 @@ function App() {
 }
 
 const theme = createMuiTheme({
+  typography: {
+    h1: {
+      color: 'white'
+    },
+    h2: {
+      color: 'white'
+    },
+    h3: {
+      color: 'white'
+    },
+    h4: {
+      color: 'white'
+    },
+    h5: {
+      color: 'white'
+    },
+    h6: {
+      color: 'white'
+    },
+    subtitle1: {
+      color: 'white'
+    },
+    subtitle2: {
+      color: 'white'
+    },
+    body1: {
+      color: 'white'
+    },
+    body2: {
+      color: 'white'
+    },
+    button: {
+      color: 'white'
+    },
+    caption: {
+      color: 'white'
+    },
+    overline: {
+      color: 'white'
+    }
+  },
   palette: {
     primary: {
       main: '#f56033'
+    },
+    secondary: {
+      main: '#000000'
     }
   }
 })
