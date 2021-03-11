@@ -1,21 +1,21 @@
 import Duda from '../../Utilities/Duda'
 
 function SimpleInstantSiteFlow() {
-  Duda.createSite('1026287')
-    .then(response => {
-      const siteName = response.siteName
-      console.log(`Site created: ${siteName}`)
-      Duda.deleteSite(siteName)
-        .then(response => {
-          console.log(`Site deleted. Message: ${response}`)
-        })
-        .catch(error => {
-          console.log(`Error deleting site!: ${error.message}`)
-        })
-    })
-    .catch(error => {
-      console.log(`Error creating site!: ${error.message}`)
-    })
+  // Duda.createSite('1026287')
+  //   .then(response => {
+  //     const siteName = response.siteName
+  //     console.log(`Site created: ${siteName}`)
+  //     Duda.deleteSite(siteName)
+  //       .then(response => {
+  //         console.log(`Site deleted. Message: ${response}`)
+  //       })
+  //       .catch(error => {
+  //         console.log(`Error deleting site!: ${error.message}`)
+  //       })
+  //   })
+  //   .catch(error => {
+  //     console.log(`Error creating site!: ${error.message}`)
+  //   })
   return (
       <div className='container instantSiteForm'>
         <h1>Simple Instant Site</h1>
