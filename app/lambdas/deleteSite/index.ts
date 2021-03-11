@@ -1,9 +1,8 @@
 // @ts-ignore
 import * as fetch from 'node-fetch'
 // @ts-ignore
-import * as headers from 'headers'
-
-const { API_BASE = '' } = process.env
+import headers from 'headers'
+const { API_BASE = '', API_USER = '', API_PASS = '' } = process.env
 
 export async function handler(event: any) {
 
@@ -19,9 +18,12 @@ export async function handler(event: any) {
     response.statusCode = result.statusCode
 
     if (result.error) {
-      response.body = JSON.stringify({
+      result.statusCode == 403 ? response.body = JSON.stringify({ 
         "error": "Duda API responded with error.",
-        "description": result.message
+        "description": "Unable to authenticate with the Duda API" 
+      }) : response.body = JSON.stringify({ 
+        "error": "Duda API responded with error.",
+        "description": JSON.stringify(result.message)  
       })
     } else {
       response.body = JSON.stringify({
@@ -48,7 +50,7 @@ const deleteSite = async function(siteName: any) {
 
     const options = {
       method: 'DELETE',
-      headers: headers.request
+      headers: headers.request(API_USER, API_PASS)
     }
 
     const response = await fetch(url, options)
@@ -56,12 +58,17 @@ const deleteSite = async function(siteName: any) {
     var result = {
       statusCode: 500,
       error: true,
-      message: await response.json()
+      message: ''
     }
-
+  
     result.statusCode = response.statusCode
-    result.error = response.ok
-
+    result.error = response.error
+    
+    if (response.error) {
+      const error = await response.json()
+      result.message = error.message
+    }
+  
     return result
 
 }

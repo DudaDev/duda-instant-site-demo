@@ -3,10 +3,13 @@ import * as lambda from '@aws-cdk/aws-lambda';
 import * as apiGateway from '@aws-cdk/aws-apigateway'
 import * as dotenv from 'dotenv';
 import { Function, FunctionProps, LayerVersion } from '@aws-cdk/aws-lambda';
-import { IResource, LambdaRestApi } from '@aws-cdk/aws-apigateway';
-import { SPADeploy } from 'cdk-spa-deploy';
+import { CorsOptions, IResource, LambdaRestApi } from '@aws-cdk/aws-apigateway';
+import { SPADeploy, SPADeployment, SPADeploymentWithCloudFront } from 'cdk-spa-deploy';
 import routes from './routes';
+import * as fs from 'fs';
 import * as pjson from '../package.json';
+import { isFunctionOrConstructorTypeNode, tokenToString } from 'typescript';
+import { setFlagsFromString } from 'v8';
 
 dotenv.config();
 
@@ -22,28 +25,30 @@ const environment = (
 )(process.env);
 
 export class DudaInstantSiteStack extends cdk.Stack {
+
   private layer: LayerVersion;
+  private frontend: SPADeploymentWithCloudFront;
+  private api: LambdaRestApi;
 
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     this.layer = this.createLayer();
-    this.createAPI(routes);
 
-    // @ts-ignore
-    new SPADeploy(this, 'cfDeploy')
+    this.frontend = new SPADeploy(this, 'cfDeploy')
       .createSiteWithCloudfront({
         indexDoc: 'index.html',
         websiteFolder: '../frontend/build'
       });
 
+    this.createAPI(routes);
+
+    // fs.writeFileSync('../frontend/.env',`API_BASE=${this.api.url}`);
   }
 
   private createResources(resource: IResource, obj: object): IResource {
     for (const [key, value] of Object.entries(obj)) {
-      key.toUpperCase() == "OPTIONS"
-        ? resource.addMethod(key, new apiGateway.LambdaIntegration(this.createOptionsHandler(key.toUpperCase(),value)))
-        : verbs.includes(key.toUpperCase())
+      verbs.includes(key.toUpperCase())
           ? resource.addMethod(key, new apiGateway.LambdaIntegration(this.createLambda(key.toUpperCase(),value)))
           : this.createResources(resource.addResource(key), value);
     }
@@ -52,22 +57,33 @@ export class DudaInstantSiteStack extends cdk.Stack {
   }
 
   private createAPI(routes: object): LambdaRestApi {
-    const api = new apiGateway.LambdaRestApi(this, 'duda', {
+    this.api = new apiGateway.LambdaRestApi(this, 'duda', {
       handler: this.createLambda('ANY','root'),
-      proxy: false
+      proxy: false,
+      defaultCorsPreflightOptions: this.getCORS(this.frontend.distribution.distributionDomainName)
     });
+    
+    this.api.root.addMethod('ANY');
+    this.createResources(this.api.root, routes);
+    return this.api;
+  }
 
-    api.root.addMethod('ANY');
-    this.createResources(api.root, routes);
-    return api;
+  private getCORS(domain: string): CorsOptions {
+    return {
+      allowOrigins: ["*"],
+      allowMethods: ["OPTIONS","GET","PUT","POST","DELETE","PATCH"],
+      allowHeaders: ["Content-Type",
+                     "X-Amz-Date",
+                     "Authorization",
+                     "X-Api-Key",
+                     "X-Amz-Security-Token",
+                     "X-Amz-User-Agent"],
+      allowCredentials: false
+    }
   }
 
   private createLambda(verb: string, dir: string): Function {
     return new lambda.Function(this, `${verb}-${dir}-Lambda`, this.getLambdaConfig(`lambdas/${dir}`));
-  }
-
-  private createOptionsHandler(verb: string, dir: string): Function {
-    return new lambda.Function(this, `${verb}-${dir}-Lambda`, this.getLambdaConfig(`lambdas/root`));
   }
 
   private getLambdaConfig(path: string): FunctionProps {
