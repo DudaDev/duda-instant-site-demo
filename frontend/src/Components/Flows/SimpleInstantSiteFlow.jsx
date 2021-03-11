@@ -1,7 +1,6 @@
-import Duda from './Duda'
-import './InstantSiteForm.css';
+import Duda from '../../Utilities/Duda'
 
-function InstantSiteForm() {
+function SimpleInstantSiteFlow() {
   Duda.createSite('1026287')
     .then(response => {
       const siteName = response.siteName
@@ -57,4 +56,4 @@ function InstantSiteForm() {
   );
 }
 
-export default InstantSiteForm;
+export default SimpleInstantSiteFlow;
