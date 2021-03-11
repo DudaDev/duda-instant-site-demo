@@ -1,14 +1,24 @@
 import { Link, withRouter } from "react-router-dom";
+import { Button, ButtonGroup } from '@material-ui/core';
+import AppsIcon from '@material-ui/icons/Apps';
 
 function Navigation() {
   return (
     <>
         <Link to="/">
-          Flow Picker
+          <Button variant="contained" color="primary" style={{
+            fontWeight: "bold"
+          }} startIcon={<AppsIcon/>}>
+            Home
+          </Button>
         </Link>
-        <Link to="/simple">
-          Simple
-        </Link>
+        <ButtonGroup>
+          <Link to="/manage">
+            <Button variant="contained" color="default">
+              Manage
+            </Button>
+          </Link>
+        </ButtonGroup>
 
     </>
   );
