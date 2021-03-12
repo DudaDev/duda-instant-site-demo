@@ -40,6 +40,7 @@ function SimpleInstantSiteFlow() {
   })
 
   function handleChange(event) {
+    console.log(event)
     const target = event.target
     const value = target.value
     const name = target.name
@@ -142,7 +143,6 @@ function SimpleInstantSiteFlow() {
         setErrored(true)
         setStatus(error)
       })
-
   }
 
   function autofill() {
