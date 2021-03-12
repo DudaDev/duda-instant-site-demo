@@ -1,23 +1,26 @@
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import SimpleInstantSiteFlow from './Components/Flows/SimpleInstantSiteFlow'
-import Navigation from './Components/Navigation'
-import Manager from './Components/Manager'
+import SimpleInstantSiteFlow from './Components/Flows/SimpleInstantSite/SimpleInstantSiteFlow'
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
+import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles"
 import FlowSelectionGrid from './Components/Grid/FlowSelectionGrid'
 import ScrollToTop from './Utilities/ScrollToTop'
+import Navigation from './Components/Navigation'
+import { createBrowserHistory } from 'history'
+import { Container } from "@material-ui/core"
+import Manager from './Components/Manager'
 import Footer from './Components/Footer'
-import './App.css'
-import { ThemeProvider, 
-        createMuiTheme } from "@material-ui/core/styles";
-import { Container, Grid } from "@material-ui/core";
 import { Helmet } from 'react-helmet'
+import './App.css'
 
 function App() {
   return (
     <>
       <ThemeProvider theme={theme}>
+        <Helmet>
+            <title>Duda Instant Site Demos</title>
+        </Helmet>
         <Router>
           <Container>
-            <ScrollToTop />
+            <ScrollToTop history={createBrowserHistory()}/>
             <Navigation />
             <Switch>
               <Route path="/" exact component={() => <FlowSelectionGrid />} />
@@ -80,7 +83,7 @@ const theme = createMuiTheme({
       main: '#f56033'
     },
     secondary: {
-      main: '#000000'
+      main: '#FF0000'
     }
   }
 })

@@ -15,7 +15,8 @@ import Typography from '@material-ui/core/Typography';
 import WebIcon from '@material-ui/icons/Web';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { Helmet } from 'react-helmet'
-import * as DudaAPI from '../Utilities/Duda'
+import 'fontsource-roboto'
+// import * as DudaAPI from '../Utilities/Duda'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -44,22 +45,16 @@ function Manager() {
         <>
         <Container>
             <Helmet>
-                <title>Simple Instant Flow</title>
+                <title>Manage Sites</title>
             </Helmet>
             <Grid container>
                 <Grid item xs={12}>
-                    <Typography variant='h4'>
-                        Manage Websites
-                    </Typography>
+                    <Typography variant='h4'>Manage Websites</Typography>
                 </Grid>
                 <Grid container spacing={2}>
                     <Grid item xs={12} md={12}>
-                        <Typography variant="h6" className={classes.title}>
-                            Edit or delete your sites:
-                        </Typography>
-                        <div className={classes.demo} style={{
-                                backgroundColor: 'rgba(0,0,0,0.1)'
-                            }}>
+                        <Typography variant="h6" className={classes.title}>Edit or delete your sites:</Typography>
+                        <div className={classes.demo} style={{ backgroundColor: 'rgba(0,0,0,0.1)' }}>
                             <List>
                             {generate(
                                 <ListItem>
@@ -68,12 +63,8 @@ function Manager() {
                                     <WebIcon />
                                     </Avatar>
                                 </ListItemAvatar>
-                                <ListItemText
-                                    primary="Business Name"
-                                />
-                                <ListItemSecondaryAction style={{
-                                    marginRight: '30px'
-                                }}>
+                                <ListItemText primary="siteName" />
+                                <ListItemSecondaryAction style={{ marginRight: '30px' }}>
                                     <IconButton edge="start" aria-label="edit">
                                     <EditIcon color='primary'/>
                                     </IconButton>
