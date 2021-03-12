@@ -1,6 +1,7 @@
 import Duda from '../../Utilities/Duda'
 import Typography from '@material-ui/core/Typography'
 import { withStyles } from "@material-ui/core/styles";
+import { Helmet } from 'react-helmet'
 import 'fontsource-roboto'
 
 const { FormControl, 
@@ -19,25 +20,13 @@ const styles = {
 };
 
 function SimpleInstantSiteFlow() {
-  // Duda.createSite('1026287')
-  //   .then(response => {
-  //     const siteName = response.siteName
-  //     console.log(`Site created: ${siteName}`)
-  //     Duda.deleteSite(siteName)
-  //       .then(response => {
-  //         console.log(`Site deleted. Message: ${response}`)
-  //       })`
-  //       .catch(error => {
-  //         console.log(`Error deleting site!: ${error.message}`)
-  //       })
-  //   })
-  //   .catch(error => {
-  //     console.log(`Error creating site!: ${error.message}`)
-  //   })
+
   return (
         <Container>
+          <Helmet>
+            <title>Simple Instant Flow</title>
+          </Helmet>
           <FormControl id="instantSite" action="#" style={{
-                   marginTop: '30px',
                    marginBottom: '30px',
                    color: 'white'
                 }}>
@@ -137,3 +126,22 @@ function SimpleInstantSiteFlow() {
 }
 
 export default withStyles(styles)(SimpleInstantSiteFlow);
+
+
+
+
+  // Duda.createSite('1026287')
+  //   .then(response => {
+  //     const siteName = response.siteName
+  //     console.log(`Site created: ${siteName}`)
+  //     Duda.deleteSite(siteName)
+  //       .then(response => {
+  //         console.log(`Site deleted. Message: ${response}`)
+  //       })`
+  //       .catch(error => {
+  //         console.log(`Error deleting site!: ${error.message}`)
+  //       })
+  //   })
+  //   .catch(error => {
+  //     console.log(`Error creating site!: ${error.message}`)
+  //   })

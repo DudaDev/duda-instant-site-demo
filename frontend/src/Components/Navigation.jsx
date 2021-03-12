@@ -16,11 +16,16 @@ function Navigation() {
           }}>
             <Button variant="contained" color="primary"><AppsIcon/></Button>
           </Link>
-          <Typography variant='h5' style={{
-            marginTop: '2px',
-            fontWeight: 'bold'
-          }}>Duda Instant Site Demos
+          <Link to="/" style={{
+            float: 'left',
+            marginRight: '20px'
+          }}>
+            <Typography variant='h5' style={{
+              marginTop: '2px',
+              fontWeight: 'bold'
+            }}>Duda Instant Site Demos
           </Typography>
+          </Link>
         </Grid>
         <Grid item xs={2}></Grid>
         <Grid item xs={2}>

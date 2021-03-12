@@ -1,13 +1,15 @@
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import SimpleInstantSiteFlow from './Components/Flows/SimpleInstantSiteFlow'
 import Navigation from './Components/Navigation'
+import Manager from './Components/Manager'
 import FlowSelectionGrid from './Components/Grid/FlowSelectionGrid'
 import ScrollToTop from './Utilities/ScrollToTop'
 import Footer from './Components/Footer'
 import './App.css'
 import { ThemeProvider, 
         createMuiTheme } from "@material-ui/core/styles";
-import { Container } from "@material-ui/core";
+import { Container, Grid } from "@material-ui/core";
+import { Helmet } from 'react-helmet'
 
 function App() {
   return (
@@ -20,6 +22,7 @@ function App() {
             <Switch>
               <Route path="/" exact component={() => <FlowSelectionGrid />} />
               <Route path="/simple" exact component={() => <SimpleInstantSiteFlow />} />
+              <Route path="/manage" exact component={() => <Manager />} />
             </Switch>
             <Footer />
           </Container>
@@ -41,7 +44,8 @@ const theme = createMuiTheme({
       color: 'white'
     },
     h4: {
-      color: 'white'
+      color: 'white',
+      marginTop: '10px'
     },
     h5: {
       color: 'white'

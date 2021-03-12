@@ -1,9 +1,13 @@
 import { Container, Grid } from "@material-ui/core";
 import FlowSelectionGridItem from "./FlowSelectionGridItem";
+import { Helmet } from 'react-helmet'
 
 function FlowSelectionGrid() {
   return (
     <>
+        <Helmet>
+          <title>Duda Instant Site Demos</title>
+        </Helmet>
         <Container style={{
           marginTop: '40px',
           marginBottom:'40px'
