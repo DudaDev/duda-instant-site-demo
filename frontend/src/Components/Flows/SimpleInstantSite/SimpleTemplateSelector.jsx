@@ -4,7 +4,7 @@ const { Select, MenuItem } = require("@material-ui/core")
 
 function SimpleTemplateSelector(props) {
     return (
-        <Select onChange={props.handleChange} name="templateId" defaultValue='0'>
+        <Select onClick={props.handleChange} name="templateId" defaultValue='0'>
             <MenuItem value='0' color="secondary"><em>Pick a template:</em></MenuItem>
             <MenuItem value='1013306' color="secondary">Creative Portfolio</MenuItem>
             <MenuItem value='1008302' color="secondary">Ice Cream Shop</MenuItem>
