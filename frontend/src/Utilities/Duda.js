@@ -1,5 +1,5 @@
 const fetch = require('node-fetch')
-const API_BASE = "https://2xj9bvasgk.execute-api.us-east-1.amazonaws.com/prod"
+const API_BASE = "https://ry3x6hiyc8.execute-api.us-east-1.amazonaws.com/prod"
 
 const headers = {
     'Content-Type': 'application/json'
@@ -86,7 +86,7 @@ const Duda = {
     },
     getSSOLink: (userId, siteName) => {
         return new Promise(async (resolve, reject) => {
-            const url = `${API_BASE}/userId/${userId}/accessFor/${siteName}`
+            const url = `${API_BASE}/users/${userId}/accessFor/${siteName}`
             const options = {
                 method: 'GET',
                 headers: headers
@@ -134,7 +134,7 @@ const Duda = {
     },
     grantUserAccess: (userId, siteName) => {
         return new Promise(async (resolve, reject) => {
-            const url = `${API_BASE}/userId/${userId}/accessFor/${siteName}`
+            const url = `${API_BASE}/users/${userId}/accessFor/${siteName}`
             const options = {
                 method: 'POST',
                 headers: headers

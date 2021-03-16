@@ -1,12 +1,14 @@
+import { Container, Typography } from "@material-ui/core";
+import 'fontsource-roboto'
 
 
 function Footer() {
   return (
-    <div className='footer'>
-        <div className='container'>
-            <p>Powered by Duda's APIs. Developer documentation <a href='https://developer.duda.co/docs'>here</a>.</p>
-        </div>
-    </div>
+    <Container style={{ marginTop: '30px', position: 'fixed', bottom: 0, marginBottom: '10px' }}>
+      <Typography>
+        Powered by Duda's APIs. Developer documentation <a href='https://developer.duda.co/docs'>here</a>
+      </Typography>
+    </Container>
   );
 }
 
