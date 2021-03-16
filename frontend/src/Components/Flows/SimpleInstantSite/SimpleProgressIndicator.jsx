@@ -8,7 +8,7 @@ function SimpleProgressIndicator(props) {
         return (
             <>
                 <Typography variant='body1'>{props.status}</Typography>
-                <LinearProgress value={props.progress} style={{ marginTop: '10px' }}/>
+                <LinearProgress variant="determinate" value={props.progress} style={{ marginTop: '10px' }}/>
             </>
         )
     } else { return <></> }

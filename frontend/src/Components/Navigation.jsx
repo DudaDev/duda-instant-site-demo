@@ -16,12 +16,12 @@ function Navigation() {
           </Typography>
           </Link>
         </Grid>
-        <Grid item xs={2}></Grid>
-        <Grid item xs={2}>
+        <Grid item xs={4}></Grid>
+        {/* <Grid item xs={2}>
           <Link to="/manage" style={{ float: 'right', width: '150px' }}>
             <Button variant="contained">Manage Sites</Button>
           </Link>
-        </Grid>
+        </Grid> */}
       </Grid>
     </>
   );

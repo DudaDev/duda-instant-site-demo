@@ -1,17 +1,40 @@
 import 'fontsource-roboto'
+import Duda from '../../../Utilities/Duda'
+import React, {  useState } from 'react'
 const { Grid, 
       Button,
- ButtonGroup } = require("@material-ui/core")
+ ButtonGroup, 
+ CircularProgress} = require("@material-ui/core")
 
 
 function SimpleSiteControls(props) {
+    const [editorLoading, setEditorLoading] = useState(false)
+    const [siteDeleting, setSiteDeleting] = useState(false)
+
+    function handleEditClick() {
+        setEditorLoading(true)
+        Duda.getSSOLink(props.userId, props.siteName)
+            .then(response => {
+                window.open(response.url)
+                setEditorLoading(false)
+            })
+    }
+
+    function handleDeleteClick() {
+        setSiteDeleting(true)
+        Duda.deleteSite(props.siteName)
+            .then(response => {
+                window.location=window.location
+            })
+    }
+
     if (props.siteCreated) {
         return (
             <Grid container>
                 <Grid item xs={12} style={{ marginTop: '30px' }}>
                     <ButtonGroup style={{ float: 'right' }}>
-                        <Button variant="contained" color="default">Edit Site</Button>
-                        <Button variant="contained" color="secondary">Delete Site</Button>
+                        <Button variant="contained" color="default" onClick={handleEditClick}>{editorLoading ? <CircularProgress style={{width: '1em', height: '1em'}}/> : 'Edit Site'}</Button>
+                        <Button variant="contained" color="secondary"onClick={handleDeleteClick}>{siteDeleting ? <CircularProgress style={{width: '1em', height: '1em'}}/> : 'Delete Site'}</Button>
                     </ButtonGroup>
                 </Grid>
             </Grid>
@@ -21,7 +44,7 @@ function SimpleSiteControls(props) {
             <Grid container>
                 <Grid item xs={8}></Grid>
                 <Grid item xs={4} style={{ marginTop: '30px' }}>
-                    <Button onClick={props.handleSubmit} variant="contained" color="primary" disabled={!props.formCompleted} style={{ float: 'right' }}>Create Site</Button>
+                    <Button onClick={props.handleSubmit} variant="contained" color="primary" disabled={(!props.formCompleted) || (props.updating && props.formCompleted)} style={{ float: 'right' }}>Create Site</Button>
                 </Grid>
             </Grid>
         )
