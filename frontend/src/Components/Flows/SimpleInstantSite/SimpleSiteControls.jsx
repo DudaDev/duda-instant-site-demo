@@ -21,7 +21,7 @@ function SimpleSiteControls(props) {
             <Grid container>
                 <Grid item xs={8}></Grid>
                 <Grid item xs={4} style={{ marginTop: '30px' }}>
-                    <Button onClick={props.handleSubmit} variant="contained" color="primary" disabled={props.completed && !props.updating} style={{ float: 'right' }}>Create Site</Button>
+                    <Button onClick={props.handleSubmit} variant="contained" color="primary" disabled={!props.formCompleted} style={{ float: 'right' }}>Create Site</Button>
                 </Grid>
             </Grid>
         )
