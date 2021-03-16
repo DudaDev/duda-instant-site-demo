@@ -1,6 +1,6 @@
 import SimpleInstantSiteFlow from './Components/Flows/SimpleInstantSite/SimpleInstantSiteFlow'
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
-import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles"
+import { ThemeProvider, unstable_createMuiStrictModeTheme as createMuiTheme } from "@material-ui/core/styles"
 import FlowSelectionGrid from './Components/Grid/FlowSelectionGrid'
 import ScrollToTop from './Utilities/ScrollToTop'
 import Navigation from './Components/Navigation'

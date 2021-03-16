@@ -19,7 +19,7 @@ function Navigation() {
         <Grid item xs={2}></Grid>
         <Grid item xs={2}>
           <Link to="/manage" style={{ float: 'right', width: '150px' }}>
-            <Button variant="contained" color="default">Manage Sites</Button>
+            <Button variant="contained">Manage Sites</Button>
           </Link>
         </Grid>
       </Grid>

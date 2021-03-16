@@ -20,7 +20,7 @@
     "@aws-cdk/assert": "^1.91.0",
     "@aws-cdk/aws-apigateway": "^1.89.0",
     "@aws-cdk/aws-lambda": "^1.89.0",
-    "@aws-cdk/core": "^1.88.0",
+    "@aws-cdk/core": "^1.91.0",
     "@types/aws-lambda": "^8.10.72",
     "aws-cdk": "^1.91.0",
     "cdk-spa-deploy": "^1.89.0",

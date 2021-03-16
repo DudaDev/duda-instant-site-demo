@@ -10,7 +10,7 @@ function FlowSelectionGrid() {
           <title>Duda Instant Site Demos</title>
         </Helmet>
         <Container style={{ marginTop: '40px', marginBottom:'40px' }}>
-          <Grid container justify='left' spacing={2}>
+          <Grid container justify='flex-start' spacing={2}>
             <Grid item xs={4}>
               <FlowSelectionGridItem name='/simple'/>
             </Grid>
