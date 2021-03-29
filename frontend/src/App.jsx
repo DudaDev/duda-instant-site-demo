@@ -9,6 +9,7 @@ import { Container } from "@material-ui/core"
 import Manager from './Components/Manager'
 import Footer from './Components/Footer'
 import { Helmet } from 'react-helmet'
+import { withAuthenticator } from '@aws-amplify/ui-react';
 import './App.css'
 
 function App() {
@@ -88,4 +89,4 @@ const theme = createMuiTheme({
   }
 })
 
-export default App;
+export default withAuthenticator(App);
