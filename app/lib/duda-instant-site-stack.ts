@@ -3,11 +3,12 @@ import * as lambda from '@aws-cdk/aws-lambda';
 import * as apiGateway from '@aws-cdk/aws-apigateway'
 import * as dotenv from 'dotenv';
 import { Function, FunctionProps, LayerVersion } from '@aws-cdk/aws-lambda';
-import { CorsOptions, IResource, LambdaRestApi } from '@aws-cdk/aws-apigateway';
+import { CorsOptions, IResource, LambdaRestApi, CfnAuthorizer, AuthorizationType } from '@aws-cdk/aws-apigateway';
 import { SPADeploy, SPADeployment, SPADeploymentWithCloudFront } from 'cdk-spa-deploy';
 import routes from './routes';
 import * as fs from 'fs';
 import * as pjson from '../package.json';
+import { UserPool } from '@aws-cdk/aws-cognito';
 import { isFunctionOrConstructorTypeNode, tokenToString } from 'typescript';
 import { setFlagsFromString } from 'v8';
 
@@ -29,6 +30,7 @@ export class DudaInstantSiteStack extends cdk.Stack {
   private layer: LayerVersion;
   private frontend: SPADeploymentWithCloudFront;
   private api: LambdaRestApi;
+  private authorizer: CfnAuthorizer;
 
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -41,15 +43,39 @@ export class DudaInstantSiteStack extends cdk.Stack {
         websiteFolder: '../frontend/build'
       });
 
-    this.createAPI(routes);
+    const userPool = new UserPool(this, 'Instant Sites User Pool', {
+      signInAliases: {
+        username: true
+      },
+      selfSignUpEnabled: false
+    });
 
+    this.api = this.createAPI(routes);
+
+    this.authorizer = new CfnAuthorizer(this, 'cfnAuth', {
+      restApiId: this.api.restApiId,
+      name: 'InstantSiteAPIAuthorizer',
+      type: 'COGNITO_USER_POOLS',
+      identitySource: 'method.request.header.Authorization',
+      providerArns: [userPool.userPoolArn],
+    });
+
+    this.createResources(this.api.root, routes);
     // fs.writeFileSync('../frontend/.env',`API_BASE=${this.api.url}`);
   }
 
   private createResources(resource: IResource, obj: object): IResource {
     for (const [key, value] of Object.entries(obj)) {
       verbs.includes(key.toUpperCase())
-          ? resource.addMethod(key, new apiGateway.LambdaIntegration(this.createLambda(key.toUpperCase(),value)))
+          ? resource.addMethod(key, 
+              new apiGateway.LambdaIntegration(this.createLambda(key.toUpperCase(),value)), 
+              {
+                authorizationType: AuthorizationType.COGNITO,
+                authorizer: {
+                  authorizerId: this.authorizer.ref
+                }
+              }
+            )
           : this.createResources(resource.addResource(key), value);
     }
 
@@ -57,15 +83,15 @@ export class DudaInstantSiteStack extends cdk.Stack {
   }
 
   private createAPI(routes: object): LambdaRestApi {
-    this.api = new apiGateway.LambdaRestApi(this, 'duda', {
+    const api = new apiGateway.LambdaRestApi(this, 'duda', {
       handler: this.createLambda('ANY','root'),
       proxy: false,
       defaultCorsPreflightOptions: this.getCORS(this.frontend.distribution.distributionDomainName)
     });
     
-    this.api.root.addMethod('ANY');
-    this.createResources(this.api.root, routes);
-    return this.api;
+    
+    api.root.addMethod('ANY');
+    return api;
   }
 
   private getCORS(domain: string): CorsOptions {
