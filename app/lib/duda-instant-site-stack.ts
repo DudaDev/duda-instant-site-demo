@@ -8,7 +8,7 @@ import { SPADeploy, SPADeployment, SPADeploymentWithCloudFront } from 'cdk-spa-d
 import routes from './routes';
 import * as fs from 'fs';
 import * as pjson from '../package.json';
-import { UserPool } from '@aws-cdk/aws-cognito';
+import { UserPool, UserPoolClient, UserPoolClientIdentityProvider } from '@aws-cdk/aws-cognito';
 import { isFunctionOrConstructorTypeNode, tokenToString } from 'typescript';
 import { setFlagsFromString } from 'v8';
 
@@ -48,6 +48,27 @@ export class DudaInstantSiteStack extends cdk.Stack {
         username: true
       },
       selfSignUpEnabled: false
+    });
+
+    const userPoolClient = userPool.addClient('Instant Sites User Pool Client', {
+      authFlows: {
+        userSrp: true
+      },
+      oAuth: {
+        callbackUrls: ['http://localhost:3000'],
+        logoutUrls: ['http://localhost:3000'],
+        flows: {
+          implicitCodeGrant: true
+        }
+      }
+    })
+
+    new cdk.CfnOutput(this, "userPoolId", {
+      value: userPool.userPoolId
+    })
+
+    new cdk.CfnOutput(this, "userPoolClientId", {
+      value: userPoolClient.userPoolClientId
     });
 
     this.api = this.createAPI(routes);
