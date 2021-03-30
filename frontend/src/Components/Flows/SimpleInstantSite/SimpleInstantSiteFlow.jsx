@@ -3,8 +3,9 @@ import SimpleTemplateSelector from './SimpleTemplateSelector'
 import SimpleSiteControls from './SimpleSiteControls'
 import Typography from '@material-ui/core/Typography'
 import Duda from '../../../Utilities/Duda'
-import React, {  useState } from 'react'
+import React, {  useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet'
+import { Auth } from 'aws-amplify';
 import 'fontsource-roboto'
 
 const { FormControl, 
@@ -15,7 +16,7 @@ const { FormControl,
 } = require('@material-ui/core/')
 
 function SimpleInstantSiteFlow() {
-
+  const [session, setSession] = useState(null);
   const [userId, setUserId] = useState('')
   const [siteName, setSiteName] = useState('')
   
@@ -41,6 +42,12 @@ function SimpleInstantSiteFlow() {
     "aboutUs": '',
     "backgroundUrl": ''
   })
+
+  useEffect(() => {
+    Auth.currentSession().then(user => {
+      setSession(user.getIdToken().getJwtToken())
+    });
+  }, []);
 
   function handleChange(event) {
     const target = event.target
@@ -120,8 +127,7 @@ function SimpleInstantSiteFlow() {
     }
 
     const userId = 'test-user-123'
-
-    Duda.createSite(form.templateId)
+    Duda.createSite(form.templateId, session)
       .then(response => {
         const site = response.siteName
         setSiteName(site)
@@ -129,18 +135,18 @@ function SimpleInstantSiteFlow() {
         setUpdating(true)
         setStatus(`Site created: ${site}`)
         setProgress(30)
-        Duda.updateContent(site, contentLibrary)
+        Duda.updateContent(site, contentLibrary, session)
           .then(response => {
             console.log(response)
             setStatus(response.status)
             setProgress(50)
-            Duda.createUser(userId)
+            Duda.createUser(userId, session)
               .then(response => {
                 console.log(response)
                 setUserId(response.userId)
                 setStatus(`User created in Duda: ${response.userId}`)
                 setProgress(80)
-                Duda.grantUserAccess(response.userId, site)
+                Duda.grantUserAccess(response.userId, site, session)
                   .then(response => {
                     console.log(response)
                     setStatus(response.status)
@@ -234,7 +240,8 @@ function SimpleInstantSiteFlow() {
               </Grid>
 
               <Grid item xs={8}>
-                <SimpleSiteControls 
+                <SimpleSiteControls
+                    session={session} 
                     siteName={siteName}
                     userId={userId}
                     updating={updating} 
