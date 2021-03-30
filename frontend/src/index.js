@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App.jsx';
 import reportWebVitals from './reportWebVitals';
-import Amplify, { Auth } from 'aws-amplify';
+import Amplify from 'aws-amplify';
 
 Amplify.configure({
   Auth: {
