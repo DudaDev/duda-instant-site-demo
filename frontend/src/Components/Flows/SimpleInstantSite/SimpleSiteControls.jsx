@@ -13,7 +13,7 @@ function SimpleSiteControls(props) {
 
     function handleEditClick() {
         setEditorLoading(true)
-        Duda.getSSOLink(props.userId, props.siteName)
+        Duda.getSSOLink(props.userId, props.siteName, props.session)
             .then(response => {
                 window.open(response.url)
                 setEditorLoading(false)
@@ -22,7 +22,7 @@ function SimpleSiteControls(props) {
 
     function handleDeleteClick() {
         setSiteDeleting(true)
-        Duda.deleteSite(props.siteName)
+        Duda.deleteSite(props.siteName, props.session)
             .then(response => {
                 window.location=window.location
             })

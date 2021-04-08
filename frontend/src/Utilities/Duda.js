@@ -1,17 +1,17 @@
 const fetch = require('node-fetch')
-const API_BASE = "https://ry3x6hiyc8.execute-api.us-east-1.amazonaws.com/prod"
+const API_BASE = "https://47s7m9nu6d.execute-api.us-east-2.amazonaws.com/prod"
 
 const headers = {
     'Content-Type': 'application/json'
 }
 
 const Duda = {
-    createSite: (templateId) => {
+    createSite: (templateId, session) => {
         return new Promise(async (resolve, reject) => {
             const url = `${API_BASE}/sites`
             const options = {
                 method: 'POST',
-                headers: headers,
+                headers: { ...headers, Authorization: `Bearer ${session}` },
                 body: JSON.stringify({
                     templateId: templateId
                 })
@@ -33,12 +33,12 @@ const Duda = {
             }
         })
     },
-    createUser: (userId) =>{
+    createUser: (userId, session) =>{
         return new Promise(async (resolve, reject) => {
             const url = `${API_BASE}/users`
             const options = {
                 method: 'POST',
-                headers: headers,
+                headers: { ...headers, Authorization: `Bearer ${session}` },
                 body: JSON.stringify({
                     userId: userId
                 })
@@ -60,12 +60,12 @@ const Duda = {
             }
         })
     },
-    deleteSite: (siteName) => {
+    deleteSite: (siteName, session) => {
         return new Promise(async (resolve, reject) => {
             const url = `${API_BASE}/sites/${siteName}`
             const options = {
                 method: 'DELETE',
-                headers: headers
+                headers: { ...headers, Authorization: `Bearer ${session}` },
             }
             const response = await fetch(url, options)
             if (response.error) {
@@ -84,12 +84,12 @@ const Duda = {
             }
         })
     },
-    getSSOLink: (userId, siteName) => {
+    getSSOLink: (userId, siteName, session) => {
         return new Promise(async (resolve, reject) => {
             const url = `${API_BASE}/users/${userId}/accessFor/${siteName}`
             const options = {
                 method: 'GET',
-                headers: headers
+                headers: { ...headers, Authorization: `Bearer ${session}` },
             }
             const response = await fetch(url, options)
             if (response.error) {
@@ -108,12 +108,12 @@ const Duda = {
             }
         })
     },
-    getSites: () => {
+    getSites: (session) => {
         return new Promise(async (resolve, reject) => {
             const url = `${API_BASE}/sites`
             const options = {
                 method: 'GET',
-                headers: headers
+                headers: { ...headers, Authorization: `Bearer ${session}` },
             }
             const response = await fetch(url, options)
             if (response.error) {
@@ -132,12 +132,12 @@ const Duda = {
             }
         })
     },
-    grantUserAccess: (userId, siteName) => {
+    grantUserAccess: (userId, siteName, session) => {
         return new Promise(async (resolve, reject) => {
             const url = `${API_BASE}/users/${userId}/accessFor/${siteName}`
             const options = {
                 method: 'POST',
-                headers: headers
+                headers: { ...headers, Authorization: `Bearer ${session}` },
             }
             const response = await fetch(url, options)
             if (response.error) {
@@ -156,12 +156,12 @@ const Duda = {
             }
         })
     },
-    publishSite: (siteName) => {
+    publishSite: (siteName, session) => {
         return new Promise(async (resolve, reject) => {
             const url = `${API_BASE}/sites/${siteName}/versions`
             const options = {
                 method: 'POST',
-                headers: headers
+                headers: { ...headers, Authorization: `Bearer ${session}` },
             }
             const response = await fetch(url, options)
             if (response.error) {
@@ -180,12 +180,12 @@ const Duda = {
             }
         })
     },
-    updateContent: (siteName, contentLibrary) => {
+    updateContent: (siteName, contentLibrary, session) => {
         return new Promise(async (resolve, reject) => {
             const url = `${API_BASE}/sites/${siteName}`
             const options = {
                 method: 'PATCH',
-                headers: headers,
+                headers: { ...headers, Authorization: `Bearer ${session}` },
                 body: JSON.stringify(contentLibrary)
             }
             const response = await fetch(url, options)
