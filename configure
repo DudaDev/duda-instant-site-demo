@@ -1,14 +1,45 @@
 #!/bin/bash
 FILE=./app/.env
 
-if test -f "$FILE"; then
-    echo "Found .env file. Try ./build"
-else
+if test -z $(which aws); then
+    echo "This demo environment depends on AWS command line tools. Please install them and try again: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html"
     echo ""
+    exit 0
+fi
+
+if test -z $(which jq); then
+    echo "This demo environment depends on jq. Please install it and try again: https://stedolan.github.io/jq/download/"
+    echo ""
+    exit 0
+fi
+
+if test -z $(aws configure get region); then
+    echo "No default AWS region is configured in your profile. If you want to specify a region, we are running aws configure for you now. Otherwise, you can leave the defaults and we'll use us-east-1."
+    echo ""
+    aws configure &&
+    REGION=$(aws configure get region) &&
+    echo ""
+fi
+
+if test -z $(aws configure get region); then
+    REGION=us-east-1
+fi
+
+if test -f "$FILE"; then
+    echo ""
+    echo "It looks like we're already configured. Try ./build"
+    echo ""
+    exit 1
+else
     echo "We need to set up your environment variables (./app/.env):"
     echo ""
-    read -p 'Enter your Duda API Username: ' USERNAME &&
-    read -p 'Enter your Duda API Password: ' PASSWORD && 
+    read -p 'Enter your Duda API Username: ' API_USER &&
+    read -p 'Enter your Duda API Password: ' API_PASS &&
+    echo ""
+    echo "Now let's create an account to access the demo environment:"
+    echo ""
+    read -p 'Enter a username: ' WEBUI_USER &&
+    read -p 'Enter a password: ' WEBUI_PASS && 
     echo "# Rename this file to .env and update the values below.
 # API credentials can be obtained by contacting support or your account manager.
 #
@@ -16,8 +47,13 @@ else
 # DO NOT DEFINE PRODUCTION SECRETS IN THIS FILE NOR IN ANY OTHER COMMITTED FILES.
 
 API_BASE=https://api.duda.co/api
-API_USER=$USERNAME
-API_PASS=$PASSWORD" > $FILE
-    echo ".env file generated."
+API_USER=$API_USER
+API_PASS=$API_PASS
+WEBUI_USER=$WEBUI_USER
+WEBUI_PASS=$WEBUI_PASS
+REGION=$AWS_REGION" > $FILE
+    echo ""
+    echo "Demo environment configured. Try ./build"
+    echo ""
+    exit 1
 fi
-exit 1

@@ -1,5 +1,5 @@
 const fetch = require('node-fetch')
-const API_BASE = "https://47s7m9nu6d.execute-api.us-east-2.amazonaws.com/prod"
+const API_BASE = "https://ry3x6hiyc8.execute-api.us-east-1.amazonaws.com/prod"
 
 const headers = {
     'Content-Type': 'application/json'

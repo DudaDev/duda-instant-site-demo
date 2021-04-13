@@ -7,9 +7,9 @@ import Amplify from 'aws-amplify';
 
 Amplify.configure({
   Auth: {
-    region: 'us-east-2',
-    userPoolId: 'us-east-2_bmNXWkgWH',
-    userPoolWebClientId: '1vaspllj9j4quo1v6lmf5kss73'
+    region: 'us-east-1',
+    userPoolId: 'us-east-1_uH63w1UHp',
+    userPoolWebClientId: '7s8jcjp1v95it6bdjajrqts9qd'
   }
 });
 

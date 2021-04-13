@@ -37,6 +37,7 @@ app/*.js
 
 frontend/.pnp
 frontent/.pnp.js
+frontend/src/cdkvarout.json
 
 # testing
 frontent/coverage
