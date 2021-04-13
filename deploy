@@ -15,6 +15,12 @@ if [ -f "$AWS_CREDENTIALS" ]; then
     echo "" &&
     echo "Demo environment infrastructure deployed." &&
     echo "" &&
+    echo "Adding user account to cognito user pool." &&
+    POOLID=$(cat ../frontend/src/cdkvarout.json | jq -r .DudaInstantSiteStack.userPoolId) &&
+    USERNAME=$(cat ../frontend/src/cdkvarout.json | jq -r .DudaInstantSiteStack.webUiUser) &&
+    PASSWORD=$(cat ../frontend/src/cdkvarout.json | jq -r .DudaInstantSiteStack.webUiPass) &&
+    aws cognito-idp admin-create-user --user-pool-id "$POOLID" --username "$USERNAME" --temporary-password "$PASSWORD"
+    echo "" &&
     echo "Building the front end..." &&
     echo "" &&
     cd ../frontend/ &&

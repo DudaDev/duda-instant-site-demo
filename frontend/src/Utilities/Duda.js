@@ -1,5 +1,6 @@
+import cdk from '../cdkvarout.json'
 const fetch = require('node-fetch')
-const API_BASE = "https://ry3x6hiyc8.execute-api.us-east-1.amazonaws.com/prod"
+const API_BASE = cdk.DudaInstantSiteStack.apiBase
 
 const headers = {
     'Content-Type': 'application/json'

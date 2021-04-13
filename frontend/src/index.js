@@ -4,12 +4,16 @@ import './index.css';
 import App from './App.jsx';
 import reportWebVitals from './reportWebVitals';
 import Amplify from 'aws-amplify';
+import cdk from './cdkvarout.json'
+const userPoolId = cdk.DudaInstantSiteStack.userPoolId
+const userPoolRegion = cdk.DudaInstantSiteStack.userPoolRegion
+const userPoolClientId = cdk.DudaInstantSiteStack.userPoolClientId
 
 Amplify.configure({
   Auth: {
-    region: 'us-east-1',
-    userPoolId: 'us-east-1_uH63w1UHp',
-    userPoolWebClientId: '7s8jcjp1v95it6bdjajrqts9qd'
+    region: userPoolRegion,
+    userPoolId: userPoolId,
+    userPoolWebClientId: userPoolClientId
   }
 });
 

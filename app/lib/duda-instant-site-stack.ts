@@ -14,12 +14,12 @@ dotenv.config();
 
 const verbs = ['GET','POST','PUT','PATCH','DELETE'];
 const environment = (
-  ({ API_USER = '', API_PASS = '', API_BASE = '', WEBUI_USER = '', WEBUI_PASS = '', REGION='' }) => ({
+  ({ API_USER = '', API_PASS = '', API_BASE = '', WEBUI_USER = '', WEBUI_TEMP_PASS = '', REGION='' }) => ({
       API_USER,
       API_PASS,
       API_BASE,
       WEBUI_USER,
-      WEBUI_PASS,
+      WEBUI_TEMP_PASS,
       REGION,
       VERSION: pjson.version,
       NODE_PATH: '/opt/nodejs/lib/:/opt/nodejs/node_modules:$LAMBDA_RUNTIME_DIR/node_modules'
@@ -124,7 +124,7 @@ export class DudaInstantSiteStack extends cdk.Stack {
     });
 
     new cdk.CfnOutput(this, "webUiPass", {
-      value: environment.WEBUI_PASS
+      value: environment.WEBUI_TEMP_PASS
     });
 
   }

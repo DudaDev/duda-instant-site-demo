@@ -39,7 +39,10 @@ else
     echo "Now let's create an account to access the demo environment:"
     echo ""
     read -p 'Enter a username: ' WEBUI_USER &&
-    read -p 'Enter a password: ' WEBUI_PASS && 
+    WEBUI_TEMP_PASS = date | base64
+    echo "Your temporary password is: $WEBUI_TEMP_PASS" &&
+    echo ""
+    read -p 'Save your temporary password and press enter to continue.'
     echo "# Rename this file to .env and update the values below.
 # API credentials can be obtained by contacting support or your account manager.
 #
@@ -50,7 +53,7 @@ API_BASE=https://api.duda.co/api
 API_USER=$API_USER
 API_PASS=$API_PASS
 WEBUI_USER=$WEBUI_USER
-WEBUI_PASS=$WEBUI_PASS
+WEBUI_TEMP_PASS=$WEBUI_TEMP_PASS
 REGION=$AWS_REGION" > $FILE
     echo ""
     echo "Demo environment configured. Try ./build"
