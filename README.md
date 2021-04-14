@@ -1,4 +1,4 @@
-# Duda AWS Instant Sites Demo
+# Duda Instant Sites Demo
 
 The Duda instant sites demo environment is a cloud-hosted web app demonstrating different instant site implementations and use-cases. It has a create-react-app frontend built with material-ui which is hosted on S3, backed by Cloudfront. An authenticated Lambda-based interface to Duda's APIs is also provided. Feel free to clone the repo and test it out yourself. 
 
