@@ -1,14 +1,17 @@
-# Welcome to your CDK TypeScript project!
+# Duda AWS Instant Sites Demo
 
-This is a blank project for TypeScript development with CDK.
+The Duda instant sites demo environment is a cloud-hosted web app demonstrating different instant site implementations and use-cases. It has a create-react-app frontend built with material-ui which is hosted on S3, backed by Cloudfront. An authenticated Lambda-based interface to Duda's APIs is also provided. Feel free to clone the repo and test it out yourself. 
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## Prerequisites
+
+Before getting started with this demo environment, you're going to need:
+
+* Access to a production Duda account.
+* [AWS command line tools](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) installed & configured. 
+* [jq](https://stedolan.github.io/jq/download/), a handy command line tool for parsing JSON. 
 
 ## Useful commands
 
- * `npm run build`   compile typescript to js
- * `npm run watch`   watch for changes and compile
- * `npm run test`    perform the jest unit tests
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk synth`       emits the synthesized CloudFormation template
+ * `./configure`   check dependencies and set up environment variables
+ * `./build`   compile infrastructure typescript and print cdk diff
+ * `./deploy`    deploy infrastructure and react app to aws
