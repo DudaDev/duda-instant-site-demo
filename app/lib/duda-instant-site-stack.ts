@@ -1,25 +1,26 @@
 import * as cdk from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
-import * as apiGateway from '@aws-cdk/aws-apigateway'
+import * as s3 from '@aws-cdk/aws-s3';
+import * as cf from '@aws-cdk/aws-cloudfront';
+import * as apiGateway from '@aws-cdk/aws-apigateway';
 import * as dotenv from 'dotenv';
 import { Function, FunctionProps, LayerVersion } from '@aws-cdk/aws-lambda';
 import { CorsOptions, IResource, LambdaRestApi, CfnAuthorizer, AuthorizationType } from '@aws-cdk/aws-apigateway';
-import { SPADeploy, SPADeployment, SPADeploymentWithCloudFront } from 'cdk-spa-deploy';
 import routes from './routes';
-import * as fs from 'fs';
 import * as pjson from '../package.json';
-import { UserPool, UserPoolClient, UserPoolClientIdentityProvider } from '@aws-cdk/aws-cognito';
-import { isFunctionOrConstructorTypeNode, tokenToString } from 'typescript';
-import { setFlagsFromString } from 'v8';
+import { UserPool } from '@aws-cdk/aws-cognito';
 
 dotenv.config();
 
 const verbs = ['GET','POST','PUT','PATCH','DELETE'];
 const environment = (
-  ({ API_USER = '', API_PASS = '', API_BASE = '' }) => ({
+  ({ API_USER = '', API_PASS = '', API_BASE = '', WEBUI_USER = '', WEBUI_TEMP_PASS = '', REGION='' }) => ({
       API_USER,
       API_PASS,
       API_BASE,
+      WEBUI_USER,
+      WEBUI_TEMP_PASS,
+      REGION,
       VERSION: pjson.version,
       NODE_PATH: '/opt/nodejs/lib/:/opt/nodejs/node_modules:$LAMBDA_RUNTIME_DIR/node_modules'
   })
@@ -28,7 +29,8 @@ const environment = (
 export class DudaInstantSiteStack extends cdk.Stack {
 
   private layer: LayerVersion;
-  private frontend: SPADeploymentWithCloudFront;
+  private s3bucket: s3.Bucket;
+  private cloudfront: cf.CloudFrontWebDistribution;
   private api: LambdaRestApi;
   private authorizer: CfnAuthorizer;
 
@@ -37,11 +39,24 @@ export class DudaInstantSiteStack extends cdk.Stack {
 
     this.layer = this.createLayer();
 
-    this.frontend = new SPADeploy(this, 'cfDeploy')
-      .createSiteWithCloudfront({
-        indexDoc: 'index.html',
-        websiteFolder: '../frontend/build'
-      });
+    // S3 frontend bucket
+    this.s3bucket = new s3.Bucket(this, "DudaInstantSiteFrontend", {
+      publicReadAccess: true,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      websiteIndexDocument: "index.html"
+    });
+
+    // Cloudfront
+    this.cloudfront = new cf.CloudFrontWebDistribution(this, "CDKCRAStaticDistribution", {
+      originConfigs: [
+        {
+          s3OriginSource: {
+            s3BucketSource: this.s3bucket
+          },
+          behaviors: [{isDefaultBehavior: true}]
+        },
+      ]
+    });
 
     const userPool = new UserPool(this, 'Instant Sites User Pool', {
       signInAliases: {
@@ -63,13 +78,6 @@ export class DudaInstantSiteStack extends cdk.Stack {
       }
     })
 
-    new cdk.CfnOutput(this, "userPoolId", {
-      value: userPool.userPoolId
-    })
-
-    new cdk.CfnOutput(this, "userPoolClientId", {
-      value: userPoolClient.userPoolClientId
-    });
 
     this.api = this.createAPI(routes);
 
@@ -82,7 +90,43 @@ export class DudaInstantSiteStack extends cdk.Stack {
     });
 
     this.createResources(this.api.root, routes);
-    // fs.writeFileSync('../frontend/.env',`API_BASE=${this.api.url}`);
+
+    new cdk.CfnOutput(this, "apiBase", {
+      value: this.api.url
+    });
+
+    new cdk.CfnOutput(this, "userPoolId", {
+      value: userPool.userPoolId
+    })
+
+    new cdk.CfnOutput(this, "userPoolClientId", {
+      value: userPoolClient.userPoolClientId
+    });
+    
+    new cdk.CfnOutput(this, "userPoolRegion", {
+      value: environment.REGION
+    });
+
+    new cdk.CfnOutput(this, "s3Bucket", {
+      value: this.s3bucket.bucketName
+    });
+
+    new cdk.CfnOutput(this, "cfDistributionDomainName", {
+      value: this.cloudfront.distributionDomainName
+    });
+
+    new cdk.CfnOutput(this, "cfDistributionId", {
+      value: this.cloudfront.distributionId
+    });
+
+    new cdk.CfnOutput(this, "webUiUser", {
+      value: environment.WEBUI_USER
+    });
+
+    new cdk.CfnOutput(this, "webUiPass", {
+      value: environment.WEBUI_TEMP_PASS
+    });
+
   }
 
   private createResources(resource: IResource, obj: object): IResource {
@@ -107,7 +151,7 @@ export class DudaInstantSiteStack extends cdk.Stack {
     const api = new apiGateway.LambdaRestApi(this, 'duda', {
       handler: this.createLambda('ANY','root'),
       proxy: false,
-      defaultCorsPreflightOptions: this.getCORS(this.frontend.distribution.distributionDomainName)
+      defaultCorsPreflightOptions: this.getCORS(this.cloudfront.distributionDomainName)
     });
     
     
@@ -117,7 +161,7 @@ export class DudaInstantSiteStack extends cdk.Stack {
 
   private getCORS(domain: string): CorsOptions {
     return {
-      allowOrigins: ["*"],
+      allowOrigins: ["*"], // safe to pass tokenized cloudfront domain in this list 
       allowMethods: ["OPTIONS","GET","PUT","POST","DELETE","PATCH"],
       allowHeaders: ["Content-Type",
                      "X-Amz-Date",
