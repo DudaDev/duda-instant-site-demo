@@ -10,6 +10,7 @@ function SimpleTemplateSelector(props) {
             <MenuItem value='1008302' color="secondary">Ice Cream Shop</MenuItem>
             <MenuItem value='1005052' color="secondary">Soap & Suds</MenuItem>
             <MenuItem value='1002785' color="secondary">My Bicycle Blog</MenuItem>
+            <MenuItem value='1240935' color="secondary">Electrician</MenuItem>
         </Select>
     )
 }

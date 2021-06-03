@@ -57,6 +57,13 @@ function SimpleInstantSiteFlow() {
     setFormCompleted(checkFormCompletion(form))
   }
 
+  function handleDelete() {
+    Duda.deleteSite(props.siteName, props.session)
+        .then(response => {
+            window.location='/'
+        })
+}
+
   function checkFormCompletion(form) {
     if (form.templateId !== '' &&
         form.businessName !== '' &&
@@ -85,6 +92,7 @@ function SimpleInstantSiteFlow() {
     setProgress(10)
 
     const contentLibrary = {
+        "label": form.businessName,
         "location_data":{
           "phones":[
             {
@@ -104,26 +112,26 @@ function SimpleInstantSiteFlow() {
             "city": form.city,
             "country": form.country
           },
-          "logo_url": form.logoUrl,
-          "site_texts":{
-            "overview": form.overview,
-            "services": form.services,
-            "about_us": form.aboutUs,
-            "custom":[{
-                "label":"Business Description",
-                "text": form.businessDescription
-            }]
-          },
-          "business_data": {
-            "name":"Business Logo",
-            "logo_url": form.logoUrl
-          },
-          "site_images":[{
-            "label":"Background",
-            "url": form.backgroundUrl,
-            "alt":"Site Background"
+          "logo_url": form.logoUrl
+        },
+        "business_data": {
+          "name": form.businessName,
+          "logo_url": form.logoUrl
+        },
+        "site_images":[{
+          "label":"Background",
+          "url": form.backgroundUrl,
+          "alt":"Site Background"
+        }],
+        "site_texts":{
+          "overview": form.overview,
+          "services": form.services,
+          "about_us": form.aboutUs,
+          "custom":[{
+              "label":"Business Description",
+              "text": form.businessDescription
           }]
-      }
+        }
     }
 
     const userId = 'test-user-123'
@@ -182,7 +190,7 @@ function SimpleInstantSiteFlow() {
   function autofill() {
     console.log("autofilling")
     setForm({
-      "templateId": '1008302',
+      "templateId": '1240935',
       "phoneNumber": '5558675309',
       "email": 'sales@mybiz.com',
       "businessName": 'Business & Co.',
@@ -247,6 +255,7 @@ function SimpleInstantSiteFlow() {
                     updating={updating} 
                     siteCreated={siteCreated} 
                     formCompleted={formCompleted}
+                    handleDelete={handleDelete}
                     handleSubmit={handleSubmit}/>
               </Grid>
 

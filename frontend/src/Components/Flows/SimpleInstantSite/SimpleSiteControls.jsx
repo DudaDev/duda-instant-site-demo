@@ -20,21 +20,13 @@ function SimpleSiteControls(props) {
             })
     }
 
-    function handleDeleteClick() {
-        setSiteDeleting(true)
-        Duda.deleteSite(props.siteName, props.session)
-            .then(response => {
-                window.location=window.location
-            })
-    }
-
     if (props.siteCreated) {
         return (
             <Grid container>
                 <Grid item xs={12} style={{ marginTop: '30px' }}>
                     <ButtonGroup style={{ float: 'right' }}>
                         <Button variant="contained" color="default" onClick={handleEditClick}>{editorLoading ? <CircularProgress style={{width: '1em', height: '1em'}}/> : 'Edit Site'}</Button>
-                        <Button variant="contained" color="secondary"onClick={handleDeleteClick}>{siteDeleting ? <CircularProgress style={{width: '1em', height: '1em'}}/> : 'Delete Site'}</Button>
+                        <Button variant="contained" color="secondary"onClick={props.handleDelete}>{siteDeleting ? <CircularProgress style={{width: '1em', height: '1em'}}/> : 'Delete Site'}</Button>
                     </ButtonGroup>
                 </Grid>
             </Grid>
