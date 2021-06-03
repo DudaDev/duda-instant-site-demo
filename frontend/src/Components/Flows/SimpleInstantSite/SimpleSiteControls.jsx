@@ -19,6 +19,10 @@ function SimpleSiteControls(props) {
                 setEditorLoading(false)
             })
     }
+    function handleDeleteClick() {
+        setSiteDeleting(true)
+        props.handleDelete(props.siteName,props.session)
+    }
 
     if (props.siteCreated) {
         return (
@@ -26,7 +30,7 @@ function SimpleSiteControls(props) {
                 <Grid item xs={12} style={{ marginTop: '30px' }}>
                     <ButtonGroup style={{ float: 'right' }}>
                         <Button variant="contained" color="default" onClick={handleEditClick}>{editorLoading ? <CircularProgress style={{width: '1em', height: '1em'}}/> : 'Edit Site'}</Button>
-                        <Button variant="contained" color="secondary"onClick={props.handleDelete}>{siteDeleting ? <CircularProgress style={{width: '1em', height: '1em'}}/> : 'Delete Site'}</Button>
+                        <Button variant="contained" color="secondary"onClick={handleDeleteClick}>{siteDeleting ? <CircularProgress style={{width: '1em', height: '1em'}}/> : 'Delete Site'}</Button>
                     </ButtonGroup>
                 </Grid>
             </Grid>

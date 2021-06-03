@@ -57,12 +57,12 @@ function SimpleInstantSiteFlow() {
     setFormCompleted(checkFormCompletion(form))
   }
 
-  function handleDelete() {
-    Duda.deleteSite(props.siteName, props.session)
+  function handleDelete(siteName, session) {
+    Duda.deleteSite(siteName, session)
         .then(response => {
             window.location='/'
         })
-}
+  }
 
   function checkFormCompletion(form) {
     if (form.templateId !== '' &&
