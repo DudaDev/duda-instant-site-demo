@@ -1,0 +1,47 @@
+#!/bin/bash
+BUILD=../frontend/build
+CDKOUTPUT=../frontend/src/cdkvarout.json
+AWS_CREDENTIALS=~/.aws/credentials
+DOTENV=./app/.env
+
+if [ ! -f "$DOTENV" ]; then
+    echo "Your .env is missing. Try running ./configure first." &&
+    exit 0
+fi
+
+if [ -f "$AWS_CREDENTIALS" ]; then
+    cd app &&
+    cdk deploy --outputs-file "$CDKOUTPUT" &&
+    echo "" &&
+    echo "Demo environment infrastructure deployed." &&
+    echo "" &&
+    echo "Adding user account to cognito user pool." &&
+    POOLID=$(cat ../frontend/src/cdkvarout.json | jq -r .DudaInstantSiteStack.userPoolId) &&
+    USERNAME=$(cat ../frontend/src/cdkvarout.json | jq -r .DudaInstantSiteStack.webUiUser) &&
+    PASSWORD=$(cat ../frontend/src/cdkvarout.json | jq -r .DudaInstantSiteStack.webUiPass) &&
+    aws cognito-idp admin-create-user --user-pool-id "$POOLID" --username "$USERNAME" --temporary-password "$PASSWORD"
+    echo "" &&
+    echo "Building the front end..." &&
+    echo "" &&
+    cd ../frontend/ &&
+    npm install &&
+    npm run build &&
+    echo "" &&
+    echo "Frontend successfully built. Syncing to S3..." &&
+    echo "" &&
+    BUCKET=$(cat src/cdkvarout.json | jq -r .DudaInstantSiteStack.s3Bucket) &&
+    DISTRIBUTIONID=$(cat src/cdkvarout.json | jq -r .DudaInstantSiteStack.cfDistributionId) &&
+    DOMAIN=$(cat src/cdkvarout.json | jq -r .DudaInstantSiteStack.cfDistributionDomainName) &&
+    echo 'Deploying new static files...' &&
+    aws s3 sync ./build/ "s3://$BUCKET" &&
+    echo 'Invalidating Cloudfront cache...' &&
+    sleep 2 &&
+    aws cloudfront create-invalidation --distribution-id "$DISTRIBUTIONID" --paths '/' &&
+    echo "" &&
+    echo "Duda Instant Site demo enviroment successfully deployed to: $DOMAIN" &&
+    echo ""
+else
+    echo "Your AWS credentials are missing. https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html"
+    exit 0
+fi
+

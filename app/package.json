@@ -1,0 +1,33 @@
+{
+  "name": "demo-aws-backend",
+  "version": "0.1.0",
+  "bin": {
+    "duda-instant-site": "bin/duda-instant-site.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.10",
+    "@types/node": "^10.17.27",
+    "ts-node": "^9.0.0",
+    "typescript": "^3.9.7"
+  },
+  "dependencies": {
+    "@aws-cdk/assert": "^1.91.0",
+    "@aws-cdk/aws-apigateway": "^1.89.0",
+    "@aws-cdk/aws-cloudfront": "^1.98.0",
+    "@aws-cdk/aws-cognito": "^1.94.1",
+    "@aws-cdk/aws-lambda": "^1.89.0",
+    "@aws-cdk/core": "^1.91.0",
+    "@types/aws-lambda": "^8.10.72",
+    "aws-cdk": "^1.91.0",
+    "dotenv": "^8.2.0",
+    "node-fetch": "^2.6.1",
+    "source-map-support": "^0.5.16",
+    "ts-jest": "^26.5.3"
+  }
+}

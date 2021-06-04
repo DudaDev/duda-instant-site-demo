@@ -1,0 +1,19 @@
+html {
+    background-color: #3a3a3a !important;
+}
+a {
+    text-decoration: none;
+}
+
+div.MuiFormControl-root input, div.MuiFormControl-root textarea, .MuiTextField-root > div {
+    color: white;
+}
+
+li.MuiMenuItem-root {
+    color: black;
+}
+
+div > div.MuiSelect-select {
+    color: white;
+    border-bottom: 1px solid white;
+}

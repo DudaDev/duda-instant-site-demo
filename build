@@ -1,0 +1,31 @@
+#!/bin/bash
+DOTENV=./app/.env
+
+if test -z $(which aws); then
+    echo ""
+    echo "This demo environment depends on AWS command line tools. Please install them and try again: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html"
+    echo ""
+    exit 0    
+fi
+
+if test -f "$DOTENV"; then
+    echo ""
+    echo "Building your Duda demo environment..."
+    echo ""
+    cd app/ &&
+    npm install &&
+    cd layers/nodejs &&
+    npm install &&
+    cd ../../ &&
+    npm run build &&
+    cd .. &&
+    echo ""
+    echo "Build successful. Try ./deploy" &&
+    echo ""
+    exit 1    
+else
+    echo ""
+    echo "Your .env is missing. Try running ./configure first."
+    echo ""
+    exit 0
+fi
