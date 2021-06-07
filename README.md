@@ -36,8 +36,8 @@ The configure script will ask you for your API credentials and to create a user 
 ```
 We need to set up your environment variables (./app/.env):
 
-Enter your Duda API Username: n4hjs23fs
-Enter your Duda API Password: fjs34r2  
+Enter your Duda API Username: n4hjs42ns
+Enter your Duda API Password: fjs124r2  
 
 Now let's create an account to access the demo environment:
 
