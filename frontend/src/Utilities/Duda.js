@@ -205,7 +205,31 @@ const Duda = {
                 resolve(await response.json())
             }
         })
-    }
+    },
+    getTemplates: (session) => {
+        return new Promise(async (resolve, reject) => {
+            const url = `${API_BASE}/templates`
+            const options = {
+                method: 'GET',
+                headers: { ...headers, Authorization: `Bearer ${session}` },
+            }
+            const response = await fetch(url, options)
+            if (response.error) {
+                var result = {
+                    statusCode: 500,
+                    error: true,
+                    message: ''
+                }
+                result.statusCode = response.statusCode
+                result.error = response.error
+                const error = await response.json()
+                result.message = error.message
+                reject(result)
+            } else {
+                resolve(await response.json())
+            }
+        })
+    },
 }
 
 export default Duda

@@ -11,6 +11,9 @@ export default {
       }
     }
   },
+  "templates": {
+    "GET": "getTemplates"
+  },
   "users": {
     "POST": "createUser",
     "{userId}": {
