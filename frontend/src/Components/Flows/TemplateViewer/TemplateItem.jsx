@@ -1,4 +1,4 @@
-import { Button, Container, Grid, Typography } from '@material-ui/core';
+import { Button, ButtonGroup, Container, Grid, Typography } from '@material-ui/core';
 import Image from 'material-ui-image';
 
 function TemplateItem(props) {
@@ -14,21 +14,23 @@ function TemplateItem(props) {
                 }}>{template.template_name}</Typography>
             <Grid container style={{
                     marginBottom: '20px'
-                }}>
+                }} justify="center" alignItems="center">
                 <Grid xs={6}>
                     <Typography>Pages: {template.template_properties.page_count}</Typography>
                     <Typography>Blog: {template.template_properties.has_blog ? "Yes" : "No"}</Typography>
+                </Grid>
+                <Grid xs={6}>
                     <Typography>Store: {template.template_properties.has_store ? "Yes" : "No"}</Typography>
                     <Typography>ID: {template.template_id}</Typography>
                 </Grid>
-                <Grid xs={6}>
-                    <Button variant="contained" color="primary" style={{ 
-                        width: '100%',
-                        marginBottom: '5px'
-                    }}>Build...</Button>
-                    <Button variant="contained" color="variant" style={{ 
-                    width: '100%'
-                }} onClick={() => { window.open(template.preview_url) }}>Preview</Button>
+                <Grid xs={12}>
+                    <ButtonGroup style={{ 
+                        float: 'right', 
+                        marginTop: '10px'
+                    }}>
+                        <Button variant="contained" color="default" onClick={() => { window.open(template.preview_url) }}>Preview</Button>
+                        <Button variant="contained" color="primary">Build...</Button>
+                    </ButtonGroup>
                 </Grid>
             </Grid>
         </>
