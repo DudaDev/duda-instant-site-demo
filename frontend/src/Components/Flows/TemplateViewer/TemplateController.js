@@ -7,14 +7,17 @@ export default function TemplateController(pageNumber) {
     const [session, setSession] = useState(null)
     const [loading, setLoading] = useState(true)
     const [templates, setTemplates] = useState([])
-    const [allTemplates, setAllTemplates] = useState([])
+    const [allTemplates, setAllTemplates] = useState(null)
     const [hasMore, setHasMore] = useState(true)
     const [total, setTotal] = useState(0)
-    const pageLength = 10
+    const pageLength = 8
 
     useEffect(() => {
+        setLoading(true)
+        window.Duda = Duda
         Auth.currentSession().then(user => {
             setSession(user.getIdToken().getJwtToken())
+            setLoading(false)
         });
     }, []);
     
@@ -29,6 +32,7 @@ export default function TemplateController(pageNumber) {
     }, [session]);
 
     useEffect(() => {
+        if (!allTemplates) return
         setLoading(true)
         setTemplates(prevTemplates => {
             var results = []
@@ -41,7 +45,7 @@ export default function TemplateController(pageNumber) {
         })
         setHasMore(allTemplates.length > templates.length)
         setLoading(false)
-    }, [pageNumber]);
+    }, [allTemplates, pageNumber]);
 
     return { loading, templates, hasMore, total }
 

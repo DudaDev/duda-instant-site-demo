@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet'
 import 'fontsource-roboto'
 import TemplateController from './TemplateController';
 import TemplateItem from './TemplateItem';
+import { Container, Grid } from '@material-ui/core';
 
 function TemplateViewer() {
   
@@ -32,19 +33,31 @@ function TemplateViewer() {
           <Helmet>
             <title>Templates</title>
           </Helmet>
-          { loading ? <p>Loading templates ...</p>
-            : templates.map((template, index) => {
-              if (templates.length === index + 1 && index + 1 !== total) {
-                return (
-                  <>
-                    <TemplateItem template={template} />
-                    <div ref={ref}>Loading more...</div>
-                  </>
-                )
-              } else {
-                return <TemplateItem template={template} />
-              }
-          })}
+          <Container style={{ marginTop: '40px', marginBottom:'140px' }}>
+            <Grid container spacing={1}>
+            { loading ? <p>Loading templates ...</p>
+              : templates.map((template, index) => {
+                if (templates.length === index + 1 && index + 1 !== total) {
+                  return (
+                    <>
+                      <Grid item xs={6} sm={3}>
+                        <TemplateItem template={template}/>
+                        <div ref={ref}></div>
+                      </Grid>
+                    </>
+                  )
+                } else {
+                  return (
+                    <>
+                        <Grid item xs={6} sm={3}>
+                          <TemplateItem template={template} />
+                        </Grid>
+                    </>
+                  )
+                }
+            })}
+            </Grid>
+          </Container>
         </>
     );
 }
