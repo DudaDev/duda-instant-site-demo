@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet'
 import 'fontsource-roboto'
 import TemplateController from './TemplateController';
 import TemplateItem from './TemplateItem';
-import { Container, Grid } from '@material-ui/core';
+import { CircularProgress, Container, Grid } from '@material-ui/core';
 
 function TemplateViewer() {
   
@@ -35,7 +35,7 @@ function TemplateViewer() {
           </Helmet>
           <Container style={{ marginTop: '40px', marginBottom:'140px' }}>
             <Grid container spacing={1}>
-            { loading ? <p>Loading templates ...</p>
+            { loading ? <CircularProgress style={{width: '1em', height: '1em'}}/>
               : templates.map((template, index) => {
                 if (templates.length === index + 1 && index + 1 !== total) {
                   return (
