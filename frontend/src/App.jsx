@@ -11,6 +11,7 @@ import Footer from './Components/Footer'
 import { Helmet } from 'react-helmet'
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import './App.css'
+import TemplateViewer from './Components/Flows/TemplateViewer/TemplateViewer'
 
 function App() {
   return (
@@ -26,7 +27,7 @@ function App() {
             <Switch>
               <Route path="/" exact component={() => <FlowSelectionGrid />} />
               <Route path="/simple" exact component={() => <SimpleInstantSiteFlow />} />
-              <Route path="/manage" exact component={() => <Manager />} />
+              <Route path="/templates" exact component={() => <TemplateViewer />} />
             </Switch>
             <Footer />
           </Container>
