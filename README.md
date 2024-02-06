@@ -16,13 +16,21 @@ Before getting started with this demo environment, you're going to need:
 
 * Access to a production Duda account.
 * [AWS command line tools](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html) installed & configured. 
-* [jq](https://stedolan.github.io/jq/download/), a handy command line tool for parsing JSON. 
+* [jq](https://stedolan.github.io/jq/download/), a handy command line tool for parsing JSON.
+* Node and NPM
+* AWS CDK V1 (npm install -g aws-cdk@1)
 
 First start by cloning the repository:
 
 ```
 git clone git@github.com:DudaDev/duda-instant-site-demo.git
 ```
+Bootstrap your AWS environment (First deploy only)
+
+```
+cdk bootstrap aws://{aws-account-id}/{aws-region}
+```
+Your account ID can be found by clicking on your account name in the upper right corner of the AWS console.
 
 Next, change into the directory and configure your environment:
 
