@@ -2,7 +2,9 @@ import * as cdk from '@aws-cdk/core';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as s3 from '@aws-cdk/aws-s3';
 import * as cf from '@aws-cdk/aws-cloudfront';
+import { S3Origin } from '@aws-cdk/aws-cloudfront-origins';
 import * as apiGateway from '@aws-cdk/aws-apigateway';
+import { PolicyStatement, CanonicalUserPrincipal } from '@aws-cdk/aws-iam';
 import * as dotenv from 'dotenv';
 import { Function, FunctionProps, LayerVersion } from '@aws-cdk/aws-lambda';
 import { CorsOptions, IResource, LambdaRestApi, CfnAuthorizer, AuthorizationType } from '@aws-cdk/aws-apigateway';
@@ -30,7 +32,7 @@ export class DudaInstantSiteStack extends cdk.Stack {
 
   private layer: LayerVersion;
   private s3bucket: s3.Bucket;
-  private cloudfront: cf.CloudFrontWebDistribution;
+  private cloudfront: cf.Distribution;
   private api: LambdaRestApi;
   private authorizer: CfnAuthorizer;
 
@@ -41,20 +43,34 @@ export class DudaInstantSiteStack extends cdk.Stack {
 
     // S3 frontend bucket
     this.s3bucket = new s3.Bucket(this, "DudaInstantSiteFrontend", {
-      publicReadAccess: true,
+      publicReadAccess: false,
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
-      websiteIndexDocument: "index.html"
+      accessControl: s3.BucketAccessControl.PRIVATE,
+      objectOwnership: s3.ObjectOwnership.BUCKET_OWNER_PREFERRED,
+      encryption: s3.BucketEncryption.S3_MANAGED,
     });
 
+    const cloudfrontOAI = new cf.OriginAccessIdentity(this, 'DudaInstantSiteOriginAccessIdentity')
+    this.s3bucket.addToResourcePolicy(new PolicyStatement({
+      actions: ['s3:GetObject'],
+      resources: [this.s3bucket.arnForObjects('*')],
+      principals: [new CanonicalUserPrincipal(
+        cloudfrontOAI.cloudFrontOriginAccessIdentityS3CanonicalUserId)],
+    }));
+    
     // Cloudfront
-    this.cloudfront = new cf.CloudFrontWebDistribution(this, "CDKCRAStaticDistribution", {
-      originConfigs: [
-        {
-          s3OriginSource: {
-            s3BucketSource: this.s3bucket
-          },
-          behaviors: [{isDefaultBehavior: true}]
-        },
+    this.cloudfront = new cf.Distribution(this, "CDKCRAStaticDistribution", {
+      defaultRootObject: 'index.html',
+      defaultBehavior: {
+        origin: new S3Origin(this.s3bucket, {
+          originAccessIdentity: cloudfrontOAI
+        }),
+        viewerProtocolPolicy: cf.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+      },
+      errorResponses: [
+        { httpStatus: 404, responsePagePath: "/index.html", responseHttpStatus: 200, ttl: cdk.Duration.seconds(60) },
+        { httpStatus: 403, responsePagePath: "/index.html", responseHttpStatus: 200, ttl: cdk.Duration.seconds(60) },
       ]
     });
 
